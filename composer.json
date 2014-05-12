@@ -1,6 +1,7 @@
 {
     "name": "coandacms/coanda-web-forms",
-    "description": "",
+    "description": "A simple web forms module for Coanda CMS",
+    "license": "MIT",
     "authors": [
         {
             "name": "Alex Dover",
