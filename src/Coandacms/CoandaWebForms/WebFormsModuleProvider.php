@@ -9,6 +9,8 @@ class WebFormsModuleProvider implements \CoandaCMS\Coanda\CoandaModuleProvider {
      */
     public $name = 'webforms';
 
+    private $webformRepo;
+
     /**
      * @param \CoandaCMS\Coanda\Coanda $coanda
      */
@@ -42,6 +44,7 @@ class WebFormsModuleProvider implements \CoandaCMS\Coanda\CoandaModuleProvider {
      */
     public function bindings(\Illuminate\Foundation\Application $app)
 	{
+        $app->bind('CoandaCMS\CoandaWebForms\Repositories\WebFormsRepositoryInterface', 'CoandaCMS\CoandaWebForms\Repositories\Eloquent\EloquentWebFormsRepository');
 	}
 
     public function checkAccess($permission, $parameters, $user_permissions)
@@ -74,4 +77,28 @@ class WebFormsModuleProvider implements \CoandaCMS\Coanda\CoandaModuleProvider {
         }
     }
 
+    private function getWebFormRepo()
+    {
+        if (!$this->webformRepo)
+        {
+            $this->webformRepo = App::make('CoandaCMS\CoandaWebForms\Repositories\WebFormsRepositoryInterface');
+        }
+
+        return $this->webformRepo;
+    }
+
+    public function formFields($page_id, $version_number)
+    {
+        return $this->getWebFormRepo()->formFields($page_id, $version_number);
+    }
+
+    public function addFormField($type, $page_id, $version_number)
+    {
+        return $this->getWebFormRepo()->addFormField($type, $page_id, $version_number);
+    }
+
+    public function removeFormField($form_field_id)
+    {
+        $this->getWebFormRepo()->removeFormField($form_field_id);
+    }
 }

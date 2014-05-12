@@ -35,7 +35,7 @@ class Form implements \CoandaCMS\Coanda\Pages\PageTypeInterface {
 					'name' => 'Form',
 					'identifier' => 'form',
 					'type' => 'webform',
-					'required' => false
+					'required' => true
 				],
 			];
 	}
