@@ -3,7 +3,7 @@
 use CoandaCMS\Coanda\Core\Attributes\AttributeType;
 use CoandaCMS\Coanda\Exceptions\AttributeValidationException;
 
-use Coanda, Input;
+use Coanda, Input, View, Request;
 
 class WebForm extends AttributeType {
 
@@ -156,7 +156,20 @@ class WebForm extends AttributeType {
                 $new_field->order = $existing_field->order;
                 $new_field->type_data = $existing_field->type_data;
                 $new_field->save();
-            }            
+            }
         }
+    }
+
+    public function render($data, $parameters = [])
+    {
+        if (Request::isMethod('post'))
+        {
+            dd('validate and store submitted data - then render the form with errors or thank you text.');
+
+            // dd($data);
+            // dd(Input::all());
+        }
+
+        return View::make('coanda-web-forms::attributes.webform', ['data' => $data, 'parameters' => $parameters ])->render();
     }
 }

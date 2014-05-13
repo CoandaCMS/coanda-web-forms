@@ -1,6 +1,6 @@
 <?php namespace CoandaCMS\CoandaWebForms\PageTypes;
 
-class Form implements \CoandaCMS\Coanda\Pages\PageTypeInterface {
+class Form extends \CoandaCMS\Coanda\Pages\PageType {
 
 	public function identifier()
 	{
@@ -45,8 +45,8 @@ class Form implements \CoandaCMS\Coanda\Pages\PageTypeInterface {
 		return $version->getAttributeByIdentifier('name')->typeData();
 	}
 
-	public function showMeta()
+	public function template()
 	{
-		return true;
+		return 'coanda-web-forms::pagetypes.form';
 	}
 }
