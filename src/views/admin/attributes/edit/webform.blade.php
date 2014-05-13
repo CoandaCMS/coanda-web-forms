@@ -60,6 +60,12 @@ $prefill_data
 				<select name="attribute_{{ $attribute->id }}_new_field_type" class="form-control">
 					<option value="textline">Text line</option>
 					<option value="textbox">Text box</option>
+					<option value="email">Email address</option>
+					<option value="number">Number</option>
+					<option value="dropdown">Dropdown box</option>
+					<option value="checkboxes">Check boxes (multiple select)</option>
+					<option value="radiobuttons">Radio buttons (single select)</option>
+					<option value="date">Date field</option>
 				</select>
 				{{ Form::button('Add', ['name' => 'attribute_action[attribute_' . $attribute_identifier . ']', 'value' => 'add_field', 'type' => 'submit', 'class' => 'btn btn-default pull-right']) }}
 			</div>

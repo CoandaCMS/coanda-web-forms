@@ -1,1 +1,2 @@
-{{-- No further options --}}
+<label for="attribute_{{ $attribute->id }}_field_{{ $field->id }}_rows">Rows</label>
+<input class="form-control" type="text" id="attribute_{{ $attribute->id }}_field_{{ $field->id }}_rows" name="attribute_{{ $attribute->id }}[fields][field_{{ $field->id }}][custom][rows]" value="{{ isset($field->typeData()['rows']) ? $field->typeData()['rows'] : '' }}">

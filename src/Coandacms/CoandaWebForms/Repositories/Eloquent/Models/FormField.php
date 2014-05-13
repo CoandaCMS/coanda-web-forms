@@ -8,4 +8,14 @@ class FormField extends Eloquent {
 
 	protected $table = 'webformfields';
 
+	public function setTypeData($data)
+	{
+		$this->type_data = json_encode($data);
+	}
+
+	public function typeData()
+	{
+		return json_decode($this->type_data, true);
+	}
+
 }

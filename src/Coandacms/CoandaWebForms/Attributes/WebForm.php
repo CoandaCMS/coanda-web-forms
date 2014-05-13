@@ -68,6 +68,28 @@ class WebForm extends AttributeType {
             {
                 $field->required = false;
             }
+
+            if (isset($field_data['custom']))
+            {
+                $custom_data = $field_data['custom'];
+
+                if (isset($custom_data['options']))
+                {
+                    $options = [];
+
+                    foreach ($custom_data['options'] as $option)
+                    {
+                        if ($option !== '')
+                        {
+                            $options[] = $option;
+                        }
+                    }
+
+                    $custom_data['options'] = $options;
+                }
+
+                $field->setTypeData($custom_data);
+            }
             
             $field->save();
         }

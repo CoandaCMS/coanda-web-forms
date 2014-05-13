@@ -4,9 +4,8 @@
 		<div class="form-group">
 			<label class="form-control">{{ $field->label }}</label>
 
-			@if ($field->type == 'textline')
-				<input type="text" class="form-control" name="field_{{ $field->id }}">
-			@endif
+			@include('coanda-web-forms::attributes.fieldtypes.' . $field->type, [ 'field' => $field ])
+
 		</div>
 	@endforeach
 
