@@ -184,14 +184,6 @@ class WebForm extends AttributeType {
 
     public function render($data, $parameters = [])
     {
-        if (Request::isMethod('post'))
-        {
-            dd('validate and store submitted data - then render the form with errors or thank you text.');
-
-            // dd($data);
-            // dd(Input::all());
-        }
-
         return View::make('coanda-web-forms::attributes.webform', ['data' => $data, 'parameters' => $parameters ])->render();
     }
 }
