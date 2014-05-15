@@ -5,9 +5,11 @@
 <table class="table table-striped">
 	@foreach ($data['fields'] as $field)
 		<tr>
-			<td>{{ $field->type }}</td>
+			<td>{{ ucfirst($field->type) }}</td>
 			<td>{{ $field->label }}@if ($field->required) * @endif</td>
-			<td>Further options</td>
+			<td>
+				@include('coanda-web-forms::admin.attributes.view.fieldtypes.' . $field->type, ['field' => $field])
+			</td>
 		</tr>
 @endforeach
 </table>

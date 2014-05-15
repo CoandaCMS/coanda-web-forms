@@ -1,6 +1,8 @@
 <?php namespace CoandaCMS\CoandaWebForms;
 
-use Route, App, Config;
+use Route, App, Config, Input, Coanda, Redirect;
+
+use CoandaCMS\Coanda\Exceptions\ValidationException;
 
 class WebFormsModuleProvider implements \CoandaCMS\Coanda\CoandaModuleProvider {
 
@@ -36,6 +38,34 @@ class WebFormsModuleProvider implements \CoandaCMS\Coanda\CoandaModuleProvider {
      */
     public function userRoutes()
 	{
+        Route::post('_webformhandler', ['before' => 'csrf', function () {
+
+            $location_id = Input::has('location_id') ? Input::get('location_id') : false;
+
+            if (!$location_id)
+            {
+                App::abort('404');
+            }
+
+            $location = Coanda::module('pages')->getLocation($location_id);
+
+            if (!$location)
+            {
+                App::abort('404');
+            }
+
+            try
+            {
+                Coanda::module('webforms')->storeFormSubmission(Input::all());
+
+                return Redirect::to(url($location->slug))->with('submission_stored', true);
+            }
+            catch (ValidationException $exception)
+            {
+                return Redirect::to(url($location->slug))->with('invalid_fields', $exception->getInvalidFields())->withInput();
+            }
+
+        }]);
 	}
 
     /**
@@ -100,5 +130,10 @@ class WebFormsModuleProvider implements \CoandaCMS\Coanda\CoandaModuleProvider {
     public function removeFormField($form_field_id)
     {
         $this->getWebFormRepo()->removeFormField($form_field_id);
+    }
+
+    public function storeFormSubmission($data)
+    {
+        $this->getWebFormRepo()->storeSubmission($data);    
     }
 }

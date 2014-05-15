@@ -41,7 +41,7 @@ $prefill_data
 						</div>
 					</div>
 
-					@include('coanda-web-forms::admin.attributes.edit.fieldtypes.' . $field->type)
+					@include('coanda-web-forms::admin.attributes.edit.fieldtypes.' . $field->type, ['field' => $field])
 				</div>
 			</div>
 
