@@ -19,7 +19,16 @@ class WebFormsModuleProvider implements \CoandaCMS\Coanda\CoandaModuleProvider {
     public function boot(\CoandaCMS\Coanda\Coanda $coanda)
 	{
 		// Add the permissions
-        $permissions = [];
+        $permissions = [
+            'view' => [
+                'name' => 'View',
+                'options' => []
+            ],
+            'download' => [
+                'name' => 'Download',
+                'options' => []
+            ],
+        ];
 
 		$coanda->addModulePermissions('webforms', 'Web forms', $permissions);
 	}

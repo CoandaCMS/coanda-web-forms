@@ -1,6 +1,6 @@
 <?php namespace CoandaCMS\CoandaWebForms\Repositories\Eloquent;
 
-use Coanda;
+use Coanda, Paginator, DB;
 
 use CoandaCMS\CoandaWebForms\Repositories\Eloquent\Models\FormField as FormFieldModel;
 use CoandaCMS\CoandaWebForms\Repositories\Eloquent\Models\Submission as SubmissionModel;
@@ -21,6 +21,41 @@ class EloquentWebFormsRepository implements WebFormsRepositoryInterface {
 		$this->form_field_model = $form_field_model;
 		$this->submission_model = $submission_model;
 		$this->submission_field_model = $submission_field_model;
+	}
+
+	public function formpages($per_page, $page)
+	{
+		$offset = ($page - 1) * $per_page;
+
+		$page_ids = $this->submission_model->distinct('page_id')->skip($offset)->take($per_page)->lists('page_id');
+		$count = DB::select('SELECT COUNT(distinct page_id) as page_count FROM webformsubmissions as page_count');
+
+		$formpages = [];
+
+		foreach ($page_ids as $page_id)
+		{
+			$formpages[] = [
+				'page' => Coanda::module('pages')->getPage($page_id),
+				'submissions' => $this->submissionCountForPage($page_id)
+			];
+		}
+
+		return Paginator::make($formpages, $count[0]->page_count, $per_page);
+	}
+
+	private function submissionCountForPage($page_id)
+	{
+		return $this->submission_model->wherePageId($page_id)->count();
+	}
+
+	public function submissions($page_id, $per_page)
+	{
+		return $this->submission_model->wherePageId($page_id)->paginate($per_page);
+	}
+
+	public function submission($submission_id)
+	{
+		return $this->submission_model->find($submission_id);
 	}
 
 	public function formFields($page_id, $version_number)
