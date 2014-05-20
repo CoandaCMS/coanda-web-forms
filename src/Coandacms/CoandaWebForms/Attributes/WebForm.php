@@ -184,6 +184,12 @@ class WebForm extends AttributeType {
 
     public function render($data, $parameters = [])
     {
+        // If we are indexing, then we don't want to return the whole form...
+        if ($parameters['indexing'])
+        {
+            return '';
+        }
+
         if (Session::has('submission_stored'))
         {
             return View::make('coanda-web-forms::attributes.webform_stored');
