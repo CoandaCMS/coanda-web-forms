@@ -1,35 +1,55 @@
 <?php namespace CoandaCMS\CoandaWebForms\PageTypes;
 
+/**
+ * Class Form
+ * @package CoandaCMS\CoandaWebForms\PageTypes
+ */
 class Form extends \CoandaCMS\Coanda\Pages\PageType {
 
-	public function identifier()
+    /**
+     * @return string
+     */
+    public function identifier()
 	{
 		return 'form';
 	}
 
-	public function name()
+    /**
+     * @return string
+     */
+    public function name()
 	{
 		return 'Form';
 	}
 
-	public function icon()
+    /**
+     * @return string
+     */
+    public function icon()
 	{
 		return 'fa-list';
 	}
 
-	public function allowsSubPages()
+    /**
+     * @return bool
+     */
+    public function allowsSubPages()
 	{
 		return false;
 	}
 
-	public function attributes()
+    /**
+     * @return array
+     */
+    public function attributes()
 	{
 		return [
 				'name' => [
 					'name' => 'Name',
 					'identifier' => 'name',
 					'type' => 'textline',
-					'required' => true
+					'required' => true,
+					'generates_slug' => true
 				],
 				'form' => [
 					'name' => 'Form',
@@ -40,12 +60,19 @@ class Form extends \CoandaCMS\Coanda\Pages\PageType {
 			];
 	}
 
-	public function generateName($version)
+    /**
+     * @param $version
+     * @return mixed
+     */
+    public function generateName($version)
 	{
 		return $version->getAttributeByIdentifier('name')->typeData();
 	}
 
-	public function template()
+    /**
+     * @return string
+     */
+    public function template()
 	{
 		return 'coanda-web-forms::pagetypes.form';
 	}

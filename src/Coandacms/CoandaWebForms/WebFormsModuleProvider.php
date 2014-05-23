@@ -4,6 +4,10 @@ use Route, App, Config, Input, Coanda, Redirect;
 
 use CoandaCMS\Coanda\Exceptions\ValidationException;
 
+/**
+ * Class WebFormsModuleProvider
+ * @package CoandaCMS\CoandaWebForms
+ */
 class WebFormsModuleProvider implements \CoandaCMS\Coanda\CoandaModuleProvider {
 
     /**
@@ -11,6 +15,9 @@ class WebFormsModuleProvider implements \CoandaCMS\Coanda\CoandaModuleProvider {
      */
     public $name = 'webforms';
 
+    /**
+     * @var
+     */
     private $webformRepo;
 
     /**
@@ -86,6 +93,13 @@ class WebFormsModuleProvider implements \CoandaCMS\Coanda\CoandaModuleProvider {
         $app->bind('CoandaCMS\CoandaWebForms\Repositories\WebFormsRepositoryInterface', 'CoandaCMS\CoandaWebForms\Repositories\Eloquent\EloquentWebFormsRepository');
 	}
 
+    /**
+     * @param $permission
+     * @param $parameters
+     * @param $user_permissions
+     * @return bool
+     * @throws PermissionDenied
+     */
     public function checkAccess($permission, $parameters, $user_permissions)
     {
         if (in_array('*', $user_permissions))
@@ -108,6 +122,9 @@ class WebFormsModuleProvider implements \CoandaCMS\Coanda\CoandaModuleProvider {
         return;
     }
 
+    /**
+     * @param $coanda
+     */
     public function buildAdminMenu($coanda)
     {
         if ($coanda->canViewModule('webforms'))
@@ -116,6 +133,9 @@ class WebFormsModuleProvider implements \CoandaCMS\Coanda\CoandaModuleProvider {
         }
     }
 
+    /**
+     * @return mixed
+     */
     private function getWebFormRepo()
     {
         if (!$this->webformRepo)
@@ -126,21 +146,38 @@ class WebFormsModuleProvider implements \CoandaCMS\Coanda\CoandaModuleProvider {
         return $this->webformRepo;
     }
 
+    /**
+     * @param $page_id
+     * @param $version_number
+     * @return mixed
+     */
     public function formFields($page_id, $version_number)
     {
         return $this->getWebFormRepo()->formFields($page_id, $version_number);
     }
 
+    /**
+     * @param $type
+     * @param $page_id
+     * @param $version_number
+     * @return mixed
+     */
     public function addFormField($type, $page_id, $version_number)
     {
         return $this->getWebFormRepo()->addFormField($type, $page_id, $version_number);
     }
 
+    /**
+     * @param $form_field_id
+     */
     public function removeFormField($form_field_id)
     {
         $this->getWebFormRepo()->removeFormField($form_field_id);
     }
 
+    /**
+     * @param $data
+     */
     public function storeFormSubmission($data)
     {
         $this->getWebFormRepo()->storeSubmission($data);    

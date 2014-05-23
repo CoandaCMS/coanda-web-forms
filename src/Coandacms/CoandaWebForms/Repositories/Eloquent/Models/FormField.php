@@ -2,18 +2,34 @@
 
 use Eloquent, Coanda, App;
 
+/**
+ * Class FormField
+ * @package CoandaCMS\CoandaWebForms\Repositories\Eloquent\Models
+ */
 class FormField extends Eloquent {
 
+    /**
+     * @var array
+     */
     protected $fillable = ['page_id', 'version_number', 'type', 'type_data', 'order'];
 
-	protected $table = 'webformfields';
+    /**
+     * @var string
+     */
+    protected $table = 'webformfields';
 
-	public function setTypeData($data)
+    /**
+     * @param $data
+     */
+    public function setTypeData($data)
 	{
 		$this->type_data = json_encode($data);
 	}
 
-	public function typeData()
+    /**
+     * @return mixed
+     */
+    public function typeData()
 	{
 		return json_decode($this->type_data, true);
 	}

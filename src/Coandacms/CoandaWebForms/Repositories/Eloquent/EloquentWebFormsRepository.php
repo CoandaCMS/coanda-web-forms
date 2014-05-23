@@ -10,12 +10,30 @@ use CoandaCMS\CoandaWebForms\Repositories\WebFormsRepositoryInterface;
 
 use CoandaCMS\Coanda\Exceptions\ValidationException;
 
+/**
+ * Class EloquentWebFormsRepository
+ * @package CoandaCMS\CoandaWebForms\Repositories\Eloquent
+ */
 class EloquentWebFormsRepository implements WebFormsRepositoryInterface {
 
+    /**
+     * @var Models\FormField
+     */
     private $form_field_model;
+    /**
+     * @var Models\Submission
+     */
     private $submission_model;
+    /**
+     * @var Models\SubmissionField
+     */
     private $submission_field_model;
 
+    /**
+     * @param FormFieldModel $form_field_model
+     * @param SubmissionModel $submission_model
+     * @param SubmissionFieldModel $submission_field_model
+     */
     public function __construct(FormFieldModel $form_field_model, SubmissionModel $submission_model, SubmissionFieldModel $submission_field_model)
 	{
 		$this->form_field_model = $form_field_model;
@@ -23,7 +41,12 @@ class EloquentWebFormsRepository implements WebFormsRepositoryInterface {
 		$this->submission_field_model = $submission_field_model;
 	}
 
-	public function formpages($per_page, $page)
+    /**
+     * @param $per_page
+     * @param $page
+     * @return mixed
+     */
+    public function formpages($per_page, $page)
 	{
 		$offset = ($page - 1) * $per_page;
 
@@ -43,27 +66,51 @@ class EloquentWebFormsRepository implements WebFormsRepositoryInterface {
 		return Paginator::make($formpages, $count[0]->page_count, $per_page);
 	}
 
-	private function submissionCountForPage($page_id)
+    /**
+     * @param $page_id
+     * @return mixed
+     */
+    private function submissionCountForPage($page_id)
 	{
 		return $this->submission_model->wherePageId($page_id)->count();
 	}
 
-	public function submissions($page_id, $per_page)
+    /**
+     * @param $page_id
+     * @param $per_page
+     * @return mixed
+     */
+    public function submissions($page_id, $per_page)
 	{
 		return $this->submission_model->wherePageId($page_id)->paginate($per_page);
 	}
 
-	public function submission($submission_id)
+    /**
+     * @param $submission_id
+     * @return mixed
+     */
+    public function submission($submission_id)
 	{
 		return $this->submission_model->find($submission_id);
 	}
 
-	public function formFields($page_id, $version_number)
+    /**
+     * @param $page_id
+     * @param $version_number
+     * @return mixed
+     */
+    public function formFields($page_id, $version_number)
 	{
 		return $this->form_field_model->wherePageId($page_id)->whereVersionNumber($version_number)->orderBy('order', 'asc')->get();
 	}
 
-	public function addFormField($type, $page_id, $version_number)
+    /**
+     * @param $type
+     * @param $page_id
+     * @param $version_number
+     * @return mixed
+     */
+    public function addFormField($type, $page_id, $version_number)
 	{
 		$form_field_data = [
 			'type' => $type,
@@ -74,7 +121,10 @@ class EloquentWebFormsRepository implements WebFormsRepositoryInterface {
 		return $this->form_field_model->create($form_field_data);
 	}
 
-	public function removeFormField($form_field_id)
+    /**
+     * @param $form_field_id
+     */
+    public function removeFormField($form_field_id)
 	{
 		$field = $this->form_field_model->find($form_field_id);
 
@@ -84,7 +134,12 @@ class EloquentWebFormsRepository implements WebFormsRepositoryInterface {
         }
 	}
 
-	public function storeSubmission($data)
+    /**
+     * @param $data
+     * @throws MissingWebFormDataException
+     * @throws \CoandaCMS\Coanda\Exceptions\ValidationException
+     */
+    public function storeSubmission($data)
 	{
         // Get the page
         $page_id = isset($data['page_id']) ? $data['page_id'] : false;
@@ -165,7 +220,12 @@ class EloquentWebFormsRepository implements WebFormsRepositoryInterface {
         }
 	}
 
-	private function validateEmailFieldType($field, $data)
+    /**
+     * @param $field
+     * @param $data
+     * @return string
+     */
+    private function validateEmailFieldType($field, $data)
 	{
 		if (!filter_var($data, FILTER_VALIDATE_EMAIL))
 		{
@@ -173,7 +233,12 @@ class EloquentWebFormsRepository implements WebFormsRepositoryInterface {
 		}
 	}
 
-	private function validateNumberFieldType($field, $data)
+    /**
+     * @param $field
+     * @param $data
+     * @return string
+     */
+    private function validateNumberFieldType($field, $data)
 	{
 		$field_type_data = $field->typeData();
 

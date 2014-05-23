@@ -5,6 +5,10 @@ use CoandaCMS\Coanda\Exceptions\AttributeValidationException;
 
 use Coanda, Input, View, Request, Session;
 
+/**
+ * Class WebForm
+ * @package CoandaCMS\CoandaWebForms\Attributes
+ */
 class WebForm extends AttributeType {
 
     /**
@@ -31,6 +35,14 @@ class WebForm extends AttributeType {
     	return 'coanda-web-forms::admin.attributes.view.webform';
     }
 
+    /**
+     * @param $data
+     * @param $is_required
+     * @param $name
+     * @param $parameters
+     * @return string
+     * @throws \CoandaCMS\Coanda\Exceptions\AttributeValidationException
+     */
     public function store($data, $is_required, $name, $parameters)
 	{
         if (!array_key_exists('notification_email', $data))
@@ -128,6 +140,11 @@ class WebForm extends AttributeType {
         return $return_data;
 	}
 
+    /**
+     * @param $action
+     * @param $data
+     * @param array $parameters
+     */
     public function handleAction($action, $data, $parameters = [])
     {
         if ($action == 'add_field')
@@ -153,6 +170,9 @@ class WebForm extends AttributeType {
         }
     }
 
+    /**
+     * @param $parameters
+     */
     public function delete($parameters)
     {
         $fields = Coanda::module('webforms')->formFields($parameters['page_id'], $parameters['version_number']);
@@ -163,6 +183,10 @@ class WebForm extends AttributeType {
         }
     }
 
+    /**
+     * @param $from_parameters
+     * @param $to_parameters
+     */
     public function initialise($from_parameters, $to_parameters)
     {
         if (isset($from_parameters['page_id']) && isset($from_parameters['version_number']))
@@ -182,6 +206,11 @@ class WebForm extends AttributeType {
         }
     }
 
+    /**
+     * @param $data
+     * @param array $parameters
+     * @return string
+     */
     public function render($data, $parameters = [])
     {
         // If we are indexing, then we don't want to return the whole form...

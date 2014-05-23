@@ -2,13 +2,26 @@
 
 use Eloquent, Coanda, App;
 
+/**
+ * Class SubmissionField
+ * @package CoandaCMS\CoandaWebForms\Repositories\Eloquent\Models
+ */
 class SubmissionField extends Eloquent {
 
+    /**
+     * @var array
+     */
     protected $fillable = ['submission_id', 'field_id', 'type', 'label', 'field_data'];
 
-	protected $table = 'webformsubmissionfields';
+    /**
+     * @var string
+     */
+    protected $table = 'webformsubmissionfields';
 
-	public function setFieldDataAttribute($value)
+    /**
+     * @param $value
+     */
+    public function setFieldDataAttribute($value)
 	{
 		if (is_array($value))
 		{
@@ -16,9 +29,12 @@ class SubmissionField extends Eloquent {
 		}
 
 		$this->attributes['field_data'] = $value;
-	}	
+	}
 
-	public function submission()
+    /**
+     * @return mixed
+     */
+    public function submission()
 	{
 		return $this->belongsTo('CoandaCMS\CoandaWebForms\Repositories\Eloquent\Models\SubmissionField', 'submission_id');
 	}
