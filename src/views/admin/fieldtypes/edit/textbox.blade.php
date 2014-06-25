@@ -1,0 +1,2 @@
+<label for="field_{{ $field->id }}_rows">Rows</label>
+<input class="form-control" type="text" id="field_{{ $field->id }}_rows" name="field_{{ $field->id }}_custom[rows]" value="{{ isset($field->typeData()['rows']) ? $field->typeData()['rows'] : '' }}">

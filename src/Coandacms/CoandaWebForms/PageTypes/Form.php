@@ -72,7 +72,7 @@ class Form extends \CoandaCMS\Coanda\Pages\PageType {
     /**
      * @return string
      */
-    public function template()
+    public function template($version, $data = [])
 	{
 		return 'coanda-web-forms::pagetypes.form';
 	}

@@ -3,6 +3,7 @@
 use Route, App, Config, Input, Coanda, Redirect;
 
 use CoandaCMS\Coanda\Exceptions\ValidationException;
+use CoandaCMS\CoandaWebForms\Exceptions\WebFormNotFoundException;
 
 /**
  * Class WebFormsModuleProvider
@@ -20,6 +21,8 @@ class WebFormsModuleProvider implements \CoandaCMS\Coanda\CoandaModuleProvider {
      */
     private $webformRepo;
 
+    private $field_types = [];
+
     /**
      * @param \CoandaCMS\Coanda\Coanda $coanda
      */
@@ -31,6 +34,10 @@ class WebFormsModuleProvider implements \CoandaCMS\Coanda\CoandaModuleProvider {
                 'name' => 'View',
                 'options' => []
             ],
+            'edit' => [
+                'name' => 'Edit',
+                'options' => []
+            ],
             'download' => [
                 'name' => 'Download',
                 'options' => []
@@ -38,6 +45,18 @@ class WebFormsModuleProvider implements \CoandaCMS\Coanda\CoandaModuleProvider {
         ];
 
 		$coanda->addModulePermissions('webforms', 'Web forms', $permissions);
+
+        $field_types = Config::get('coanda-web-forms::field_types');
+
+        foreach ($field_types as $field_type)
+        {
+            if (class_exists($field_type))
+            {
+                $type = new $field_type;
+
+                $this->field_types[$type->identifier()] = $type;
+            }
+        }
 	}
 
     /**
@@ -72,7 +91,7 @@ class WebFormsModuleProvider implements \CoandaCMS\Coanda\CoandaModuleProvider {
 
             try
             {
-                Coanda::module('webforms')->storeFormSubmission(Input::all());
+                Coanda::webforms()->storeSubmission(Input::all(), $location_id);
 
                 return Redirect::to(url($location->slug))->with('submission_stored', true);
             }
@@ -133,6 +152,16 @@ class WebFormsModuleProvider implements \CoandaCMS\Coanda\CoandaModuleProvider {
         }
     }
 
+    public function fieldTypes()
+    {
+        return $this->field_types;
+    }
+
+    public function fieldType($identifier)
+    {
+        return isset($this->field_types[$identifier]) ? $this->field_types[$identifier] : false;
+    }
+
     /**
      * @return mixed
      */
@@ -146,40 +175,28 @@ class WebFormsModuleProvider implements \CoandaCMS\Coanda\CoandaModuleProvider {
         return $this->webformRepo;
     }
 
-    /**
-     * @param $page_id
-     * @param $version_number
-     * @return mixed
-     */
-    public function formFields($page_id, $version_number)
+    public function availableForms()
     {
-        return $this->getWebFormRepo()->formFields($page_id, $version_number);
+        return $this->getWebFormRepo()->formlist();
     }
 
-    /**
-     * @param $type
-     * @param $page_id
-     * @param $version_number
-     * @return mixed
-     */
-    public function addFormField($type, $page_id, $version_number)
+    public function getForm($id)
     {
-        return $this->getWebFormRepo()->addFormField($type, $page_id, $version_number);
-    }
-
-    /**
-     * @param $form_field_id
-     */
-    public function removeFormField($form_field_id)
-    {
-        $this->getWebFormRepo()->removeFormField($form_field_id);
+        try
+        {
+            return $this->getWebFormRepo()->getForm($id);
+        }
+        catch (WebFormNotFoundException $exception)
+        {
+            return false;
+        }
     }
 
     /**
      * @param $data
      */
-    public function storeFormSubmission($data)
+    public function storeSubmission($data, $location_id)
     {
-        $this->getWebFormRepo()->storeSubmission($data);    
+        $this->getWebFormRepo()->storeSubmission($data, $location_id);    
     }
 }

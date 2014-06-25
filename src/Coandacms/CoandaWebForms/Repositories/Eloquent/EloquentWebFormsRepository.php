@@ -1,12 +1,17 @@
 <?php namespace CoandaCMS\CoandaWebForms\Repositories\Eloquent;
 
-use Coanda, Paginator, DB;
+use Input, Coanda;
 
-use CoandaCMS\CoandaWebForms\Repositories\Eloquent\Models\FormField as FormFieldModel;
+use CoandaCMS\CoandaWebForms\Repositories\Eloquent\Models\WebForm as WebFormModel;
+use CoandaCMS\CoandaWebForms\Repositories\Eloquent\Models\WebFormField as WebFormFieldModel;
+
 use CoandaCMS\CoandaWebForms\Repositories\Eloquent\Models\Submission as SubmissionModel;
 use CoandaCMS\CoandaWebForms\Repositories\Eloquent\Models\SubmissionField as SubmissionFieldModel;
 
 use CoandaCMS\CoandaWebForms\Repositories\WebFormsRepositoryInterface;
+use CoandaCMS\CoandaWebForms\Exceptions\WebFormNotFoundException;
+use CoandaCMS\CoandaWebForms\Exceptions\FieldTypeRequiredException;
+use CoandaCMS\CoandaWebForms\Exceptions\SubmissionNotFoundException;
 
 use CoandaCMS\Coanda\Exceptions\ValidationException;
 
@@ -16,27 +21,17 @@ use CoandaCMS\Coanda\Exceptions\ValidationException;
  */
 class EloquentWebFormsRepository implements WebFormsRepositoryInterface {
 
-    /**
-     * @var Models\FormField
-     */
-    private $form_field_model;
-    /**
-     * @var Models\Submission
-     */
+    private $web_form_model;
+    private $web_form_field_model;
+
     private $submission_model;
-    /**
-     * @var Models\SubmissionField
-     */
     private $submission_field_model;
 
-    /**
-     * @param FormFieldModel $form_field_model
-     * @param SubmissionModel $submission_model
-     * @param SubmissionFieldModel $submission_field_model
-     */
-    public function __construct(FormFieldModel $form_field_model, SubmissionModel $submission_model, SubmissionFieldModel $submission_field_model)
+    public function __construct(WebFormModel $web_form_model, WebFormFieldModel $web_form_field_model, SubmissionModel $submission_model, SubmissionFieldModel $submission_field_model)
 	{
-		$this->form_field_model = $form_field_model;
+		$this->web_form_model = $web_form_model;
+		$this->web_form_field_model = $web_form_field_model;
+
 		$this->submission_model = $submission_model;
 		$this->submission_field_model = $submission_field_model;
 	}
@@ -46,222 +41,201 @@ class EloquentWebFormsRepository implements WebFormsRepositoryInterface {
      * @param $page
      * @return mixed
      */
-    public function formpages($per_page, $page)
+    public function forms($per_page)
 	{
-		$offset = ($page - 1) * $per_page;
+		return $this->web_form_model->paginate($per_page);
+	}
 
-		$page_ids = $this->submission_model->distinct('page_id')->skip($offset)->take($per_page)->lists('page_id');
-		$count = DB::select('SELECT COUNT(distinct page_id) as page_count FROM webformsubmissions as page_count');
+    public function formlist()
+	{
+		return $this->web_form_model->get();
+	}
 
-		$formpages = [];
+	public function createForm($data)
+	{
+		$invalid_fields = [];
 
-		foreach ($page_ids as $page_id)
+		if (!isset($data['name']) || $data['name'] == '')
 		{
-			$formpages[] = [
-				'page' => Coanda::module('pages')->getPage($page_id),
-				'submissions' => $this->submissionCountForPage($page_id)
-			];
+			$invalid_fields['name'] = 'Please enter a name';
 		}
 
-		return Paginator::make($formpages, $count[0]->page_count, $per_page);
-	}
-
-    /**
-     * @param $page_id
-     * @return mixed
-     */
-    private function submissionCountForPage($page_id)
-	{
-		return $this->submission_model->wherePageId($page_id)->count();
-	}
-
-    /**
-     * @param $page_id
-     * @param $per_page
-     * @return mixed
-     */
-    public function submissions($page_id, $per_page)
-	{
-		return $this->submission_model->wherePageId($page_id)->paginate($per_page);
-	}
-
-    /**
-     * @param $submission_id
-     * @return mixed
-     */
-    public function submission($submission_id)
-	{
-		return $this->submission_model->find($submission_id);
-	}
-
-    /**
-     * @param $page_id
-     * @param $version_number
-     * @return mixed
-     */
-    public function formFields($page_id, $version_number)
-	{
-		return $this->form_field_model->wherePageId($page_id)->whereVersionNumber($version_number)->orderBy('order', 'asc')->get();
-	}
-
-    /**
-     * @param $type
-     * @param $page_id
-     * @param $version_number
-     * @return mixed
-     */
-    public function addFormField($type, $page_id, $version_number)
-	{
-		$form_field_data = [
-			'type' => $type,
-			'page_id' => $page_id,
-			'version_number' => $version_number
-		];
-
-		return $this->form_field_model->create($form_field_data);
-	}
-
-    /**
-     * @param $form_field_id
-     */
-    public function removeFormField($form_field_id)
-	{
-		$field = $this->form_field_model->find($form_field_id);
-
-        if ($field)
-        {
-            $field->delete();
-        }
-	}
-
-    /**
-     * @param $data
-     * @throws MissingWebFormDataException
-     * @throws \CoandaCMS\Coanda\Exceptions\ValidationException
-     */
-    public function storeSubmission($data)
-	{
-        // Get the page
-        $page_id = isset($data['page_id']) ? $data['page_id'] : false;
-        $version = isset($data['version']) ? $data['version'] : false;
-        $location_id = isset($data['location_id']) ? $data['location_id'] : false;
-
-        if ($page_id && $location_id)
-        {
-	        $page = Coanda::module('pages')->getPage($page_id);
-	        $location = Coanda::module('pages')->getLocation($location_id);
-
-	        if ($page && $location)
-	        {
-	        	$version_number = $version ? $version : $page->current_version;
-
-	            $fields = $this->formFields($page->id, $version_number);
-	            $invalid_fields = [];
-
-	            foreach ($fields as $field)
-	            {
-	            	$field_data = isset($data['field_' . $field->id]) ? $data['field_' . $field->id] : false;
-
-	            	if ($field->required && !$field_data)
-	            	{
-	            		$invalid_fields['field_' . $field->id] = $field->label . ' is required';
-	            	}
-
-	            	$type_validation_method = camel_case('validate-' . $field->type . '-field-type');
-
-	            	if (method_exists($this, $type_validation_method))
-	            	{
-	            		$validation_result = $this->$type_validation_method($field, $field_data);
-
-	            		if ($validation_result)
-	            		{
-	            			$invalid_fields['field_' . $field->id] = $validation_result;
-	            		}
-	            	}
-	            }
-
-	            if (count($invalid_fields) > 0)
-	            {
-	            	// dd($invalid_fields);
-	            	throw new ValidationException($invalid_fields);
-	            }
-
-            	// Creat the submission
-            	$submission_data = [
-            		'page_id' => $page->id,
-            		'version_number' => $version_number
-            	];
-
-            	$submission = $this->submission_model->create($submission_data);
-
-            	foreach ($fields as $field)
-            	{
-            		$field_data = isset($data['field_' . $field->id]) ? $data['field_' . $field->id] : false;
-
-            		$submission_field_data = [
-            			'submission_id' => $submission->id,
-            			'field_id' => $field->id,
-            			'label' => $field->label,
-            			'type' => $field->type,
-            			'field_data' => $field_data
-            		];
-
-            		$submission_field = $this->submission_field_model->create($submission_field_data);
-            	}
-	        }
-	        else
-	        {
-	        	throw new MissingWebFormDataException('Unable to find submitted page or location');
-	        }
-        }
-        else
-        {
-        	throw new MissingWebFormDataException('Missing page_id or location_id from data');
-        }
-	}
-
-    /**
-     * @param $field
-     * @param $data
-     * @return string
-     */
-    private function validateEmailFieldType($field, $data)
-	{
-		if (!filter_var($data, FILTER_VALIDATE_EMAIL))
+		if (count($invalid_fields) > 0)
 		{
-			return 'Please enter a valid email address';
+			throw new ValidationException($invalid_fields);
 		}
+
+		return $this->web_form_model->create(['name' => $data['name']]);
 	}
 
-    /**
-     * @param $field
-     * @param $data
-     * @return string
-     */
-    private function validateNumberFieldType($field, $data)
+	public function getForm($id)
 	{
-		$field_type_data = $field->typeData();
+		$form = $this->web_form_model->find($id);
 
-		if ((isset($field_type_data['number_min']) && $field_type_data['number_min'] > 0) && (isset($field_type_data['number_max']) && $field_type_data['number_max'] > 0))
+		if (!$form)
 		{
-			if ($data < $field_type_data['number_min'] || $data > $field_type_data['number_max'])
+			throw new WebFormNotFoundException('Form #' . $id . ' does not exists.');
+		}
+
+		return $form;
+	}
+
+	public function storeForm($id, $data)
+	{
+		$form = $this->getForm($id);
+
+		$invalid_fields = [];
+
+		if (!isset($data['name']) || $data['name'] == '')
+		{
+			$invalid_fields['name'] = 'Please enter a name for this form';
+		}
+		else
+		{
+			$form->name = $data['name'];
+			$form->save();
+		}
+
+		foreach ($form->fields as $field)
+		{
+			$field->label = isset($data['field_' . $field->id . '_label']) ? $data['field_' . $field->id . '_label'] : $field->label;
+			$field->order = isset($data['field_' . $field->id . '_order']) ? $data['field_' . $field->id . '_order'] : $field->order;
+			$field->columns = isset($data['field_' . $field->id . '_columns']) ? $data['field_' . $field->id . '_columns'] : $field->columns;
+
+			if ($field->columns > 12)
 			{
-				return 'Please enter a value between ' . $field_type_data['number_min'] . ' and ' . $field_type_data['number_max'];
+				$field->columns = 12;
+			}
+
+			$field->required = isset($data['field_' . $field->id . '_required']) && $data['field_' . $field->id . '_required'] == 'true';
+
+			if (isset($data['field_' . $field->id . '_custom']))
+			{
+				$field->setTypeData($data['field_' . $field->id . '_custom']);
+			}
+
+			$field->save();
+
+			if ($field->label == '')
+			{
+				$invalid_fields['field_' . $field->id]['label'] = 'Please enter a label for this field';
+			}			
+		}
+
+		if (count($invalid_fields) > 0)
+		{
+			throw new ValidationException($invalid_fields);
+		}
+	}
+
+	public function addField($form_id, $field_type)
+	{
+		$form = $this->getForm($form_id);
+
+		$field = new $this->web_form_field_model;
+		$field->type = $field_type;
+		$field->order = $this->web_form_field_model->where('webform_id', '=', $form->id)->max('order') + 1;
+
+		$form->fields()->save($field);
+	}
+
+	public function removeField($form_id, $field_id)
+	{
+		$form = $this->getForm($form_id);
+
+		$form->fields()->whereId($field_id)->delete();
+	}
+
+	public function fieldHeadings($form)
+	{
+		$headings = [];
+
+		foreach ($form->firstFiveFields() as $field)
+		{
+			$headings[] = $field->label;
+		}
+
+		return $headings;
+	}
+
+	public function storeSubmission($data, $location_id)
+	{
+		if (!isset($data['form_id']))
+		{
+			throw new ValidationException(['form' => 'Missing form_id']);
+		}
+
+		try
+		{
+			$form = $this->getForm($data['form_id']);
+
+			$invalid_fields = [];
+			$field_values = [];
+
+			foreach ($form->fields as $field)
+			{
+				if (!$field->canStore())
+				{
+					continue;
+				}
+
+				$field_data = isset($data['field_' . $field->id]) ? $data['field_' . $field->id] : false;
+
+				try
+				{
+					$field_values['field_' . $field->id] = $field->handleSubmissionData($field_data);
+				}
+				catch (FieldTypeRequiredException $exception)
+				{
+					$invalid_fields['field_' . $field->id] = $exception->getMessage();
+				}
+			}
+
+			if (count($invalid_fields) > 0)
+			{
+				throw new ValidationException($invalid_fields);
+			}
+
+			$submission = $this->submission_model->create([
+					'form_id' => $form->id,
+					'location_id' => $data['location_id'],
+					'version_number' => $data['version'],
+					'slug' => ''
+				]);
+
+			foreach ($form->fields as $field)
+			{
+				if (!$field->canStore())
+				{
+					continue;
+				}
+
+				$submission_field = new $this->submission_field_model;
+
+				$submission_field->label = $field->label;
+				$submission_field->field_id = $field->id;
+				$submission_field->type = $field->type;
+				$submission_field->field_data = $field_values['field_' . $field->id];
+
+				$submission->fields()->save($submission_field);
 			}
 		}
-		elseif ((isset($field_type_data['number_min']) && $field_type_data['number_min'] > 0))
+		catch (WebFormNotFoundException $exception)
 		{
-			if ($data < $field_type_data['number_min'])
-			{
-				return 'Please enter a value greater than ' . $field_type_data['number_min'];
-			}
-		}
-		elseif ((isset($field_type_data['number_max']) && $field_type_data['number_max'] > 0))
-		{
-			if ($data > $field_type_data['number_max'])
-			{
-				return 'Please enter a value less than ' . $field_type_data['number_max'];
-			}
+			throw new ValidationException(['form' => 'Error fetching form']);
 		}
 	}
+
+	public function getSubmission($id)
+	{
+		$submission = $this->submission_model->find($id);
+
+		if (!$submission)
+		{
+			throw new SubmissionNotFoundException('Submission #' . $id . ' does not exists.');
+		}
+
+		return $submission;
+	}
+
 }

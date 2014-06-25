@@ -12,20 +12,26 @@ class CreateFormsTables extends Migration {
 	 */
 	public function up()
 	{
+		Schema::create('webforms', function ($table) {
+
+			$table->increments('id');
+			$table->string('name');
+
+			$table->timestamps();
+
+		});
+
 		Schema::create('webformfields', function ($table) {
 
 			$table->increments('id');
-
-			$table->integer('page_id');
-			$table->integer('version_number');
-
-			$table->string('label');
+			$table->integer('webform_id');
+			$table->integer('order');
+			$table->integer('columns');
 			$table->boolean('required');
-
+			
+			$table->string('label');
 			$table->string('type');
 			$table->text('type_data');
-
-			$table->integer('order');
 
 			$table->timestamps();
 
@@ -39,6 +45,7 @@ class CreateFormsTables extends Migration {
 	 */
 	public function down()
 	{
+		Schema::drop('webforms');
 		Schema::drop('webformfields');
 	}
 

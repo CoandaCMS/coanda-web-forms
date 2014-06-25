@@ -5,13 +5,13 @@
 		@foreach ((isset($field->typeData()['options']) ? $field->typeData()['options'] : []) as $option_index => $option)
 			<div class="input-group">
 				<span class="input-group-addon">&bull;</span>
-				<input class="form-control" type="text" name="attribute_{{ $attribute->id }}[fields][field_{{ $field->id }}][custom][options][]" value="{{ $option }}">
+				<input class="form-control" type="text" name="field_{{ $field->id }}_custom[options][]" value="{{ $option }}">
 			</div>
 		@endforeach
 
 		<div class="input-group">
 			<span class="input-group-addon">&bull;</span>
-			<input class="form-control" type="text" name="attribute_{{ $attribute->id }}[fields][field_{{ $field->id }}][custom][options][]" value="">
+			<input class="form-control" type="text" name="field_{{ $field->id }}_custom[options][]" value="">
 		</div>
 	</div>
 

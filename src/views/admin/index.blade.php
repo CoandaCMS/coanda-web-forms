@@ -1,6 +1,6 @@
 @extends('coanda::admin.layout.main')
 
-@section('page_title', 'Web form submissions')
+@section('page_title', 'Forms')
 
 @section('content')
 
@@ -17,13 +17,15 @@
 	<div class="page-name col-md-12">
 		<h1 class="pull-left">Forms</h1>
 		<div class="page-status pull-right">
-			<span class="label label-default">Total {{ $formpages->getTotal() }}</span>
+			<span class="label label-default">Total {{ $forms->getTotal() }}</span>
 		</div>
 	</div>
 </div>
 
 <div class="row">
-	<div class="page-options col-md-12"></div>
+	<div class="page-options col-md-12">
+		<a href="{{ Coanda::adminUrl('forms/add') }}" class="btn btn-primary">Add new form</a>
+	</div>
 </div>
 
 <div class="row">
@@ -34,19 +36,20 @@
 			</ul>
 			<div class="tab-content">
 				<div class="tab-pane active" id="forms">
-					@if ($formpages->count() > 0)
+					@if ($forms->count() > 0)
 						<table class="table table-striped">
-							@foreach ($formpages as $formpage)
+							@foreach ($forms as $form)
 							<tr>
-								<td><a href="{{ Coanda::adminUrl('forms/submissions/' . $formpage['page']->id) }}">{{ $formpage['page']->present()->name }}</a></td>
-								<td class="tight">{{ $formpage['submissions'] }}</td>
+								<td><a href="{{ Coanda::adminUrl('forms/view/' . $form->id) }}">{{ $form->name }}</a></td>
+								<td>{{ $form->submissions->count() }} @if ($form->submissions->count() == 1) submission @else submissions @endif</td>
+								<td class="tight"><a href="{{ Coanda::adminUrl('forms/edit/' . $form->id) }}"><i class="fa fa-pencil-square-o"></i></a></td>
 							</tr>
 							@endforeach
 						</table>
 
-						{{ $formpages->links() }}
+						{{ $forms->links() }}
 					@else
-						<p>No forms have had any submissions yet, when they do they will appear here!</p>
+						<p>No forms have been created yet, be the first!</p>
 					@endif
 				</div>
 			</div>

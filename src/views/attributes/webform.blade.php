@@ -1,24 +1,47 @@
-{{ Form::open(['url' => url('_webformhandler')]) }}
+@set('form', Coanda::webforms()->getForm($data))
 
-	<input type="hidden" name="page_id" value="{{ $parameters['page']->id }}">
-	<input type="hidden" name="version" value="{{ $parameters['page']->current_version }}">
-	<input type="hidden" name="location_id" value="{{ $parameters['pagelocation']->id }}">
+@if ($form)
+	{{ Form::open(['url' => url('_webformhandler'), 'files' => true]) }}
 
-	@if ($has_error)
-		<div class="alert alert-danger">
-			Error, please complete all the required fields
+		<input type="hidden" name="form_id" value="{{ $form->id }}">
+		<input type="hidden" name="page_id" value="{{ $parameters['page']->id }}">
+		<input type="hidden" name="version" value="{{ $parameters['page']->current_version }}">
+		<input type="hidden" name="location_id" value="{{ $parameters['pagelocation']->id }}">
+
+		@if ($has_error)
+			<div class="alert alert-danger">
+				Error, please complete all the required fields
+			</div>
+		@endif
+
+		@set('columncounter', 0)
+		@set('field_count', 1)
+
+		<div class="row">
+			@foreach ($form->fields as $field)
+
+				@set('columncounter', $columncounter + ($field->columns == 0 ? 12 : $field->columns))
+
+				<div class="col-md-{{ $field->columns == 0 ? 12 : $field->columns }}">
+					@include('coanda-web-forms::attributes.fieldtypes.' . $field->type, [ 'field' => $field ])
+				</div>
+
+				@if ($columncounter >= 12 && $field_count < $form->fields->count())
+						@set('columncounter', 0)
+					</div>
+					<div class="row">
+				@endif
+
+				@set('field_count', $field_count = $field_count + 1)
+
+			@endforeach
 		</div>
-	@endif
 
-	@foreach ($data['fields'] as $field)
-		<div class="form-group @if (isset($invalid_fields['field_' . $field->id])) has-error @endif">
-			<label class="control-label">{{ $field->label }} @if ($field->required) * @endif</label>
-			@include('coanda-web-forms::attributes.fieldtypes.' . $field->type, [ 'field' => $field, 'parameters' => $field->typeData(), 'invalid_fields' => Session::has('invalid_fields') ? Session::get('invalid_fields') : [] ])
+		<div class="form-group">
+			<button class="btn btn-default" name="submit_form">Submit</button>
 		</div>
-	@endforeach
 
-	<div class="form-group">
-		<button class="btn btn-default" name="submit_form">Submit</button>
-	</div>
-
-{{ Form::close() }}
+	{{ Form::close() }}
+@else
+	<p>Error.</p>
+@endif

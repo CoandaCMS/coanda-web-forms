@@ -11,7 +11,7 @@ class Submission extends Eloquent {
     /**
      * @var array
      */
-    protected $fillable = ['page_id', 'version_number'];
+    protected $fillable = ['form_id', 'location_id', 'version', 'slug'];
 
     /**
      * @var string
@@ -25,5 +25,26 @@ class Submission extends Eloquent {
 	{
 		return $this->hasMany('CoandaCMS\CoandaWebForms\Repositories\Eloquent\Models\SubmissionField', 'submission_id');
 	}
+
+    public function fieldsForHeadings($headings)
+    {
+        $fields = [];
+
+        foreach ($headings as $heading)
+        {
+            $field = $this->fields()->whereLabel($heading)->first();
+
+            if ($field)
+            {
+                $fields[] = $field;
+            }
+            else
+            {
+                $fields[] = false;
+            }
+        }
+
+        return $fields;
+    }
 
 }

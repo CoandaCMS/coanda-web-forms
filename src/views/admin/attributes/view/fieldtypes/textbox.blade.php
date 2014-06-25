@@ -1,1 +1,0 @@
-Rows: {{ isset($field->typeData()['rows']) ? $field->typeData()['rows'] : '-' }}

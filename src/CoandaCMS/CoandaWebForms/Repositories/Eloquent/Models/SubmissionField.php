@@ -18,6 +18,11 @@ class SubmissionField extends Eloquent {
      */
     protected $table = 'webformsubmissionfields';
 
+    public function type()
+    {
+        return Coanda::webforms()->fieldType($this->type);
+    }
+
     /**
      * @param $value
      */
@@ -39,4 +44,13 @@ class SubmissionField extends Eloquent {
 		return $this->belongsTo('CoandaCMS\CoandaWebForms\Repositories\Eloquent\Models\SubmissionField', 'submission_id');
 	}
 
+    public function getDisplayLineAttribute()
+    {
+        return $this->type()->displayLine($this);
+    }
+
+    public function getDisplayFullAttribute()
+    {
+        return $this->type()->displayFull($this);
+    }
 }

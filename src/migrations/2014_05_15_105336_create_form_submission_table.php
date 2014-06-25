@@ -16,8 +16,10 @@ class CreateFormSubmissionTable extends Migration {
 
 			$table->increments('id');
 
-			$table->integer('page_id');
-			$table->integer('version_number');
+			$table->integer('form_id');
+			$table->integer('location_id');
+			$table->integer('version');
+			$table->string('slug');
 
 			$table->timestamps();
 
@@ -31,7 +33,7 @@ class CreateFormSubmissionTable extends Migration {
 			$table->integer('field_id');
 			$table->string('type');
 			$table->string('label');
-			$table->text('field_data');
+			$table->text('field_data')->nullable();
 
 			$table->timestamps();
 
