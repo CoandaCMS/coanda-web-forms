@@ -62,7 +62,7 @@ class File extends FieldType {
 
         if (is_array($data))
         {
-            return '<a href="">' . $data['file_name'] . '</a>';
+            return '<a class="new-window" href="' . Coanda::adminUrl('media/download/' . $data['media_id']) . '">' . $data['file_name'] . '</a>';
         }
 
         return '';
