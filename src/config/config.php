@@ -25,4 +25,10 @@ return array(
 
 	],
 
+	'post_submit_handlers' => [
+
+		'CoandaCMS\CoandaWebForms\PostSubmitHandlers\AdminEmailNotification',
+
+	]
+
 );

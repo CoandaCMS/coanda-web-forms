@@ -119,6 +119,28 @@
 					</div>
 				</div>
 
+				@if (count($available_post_submit_handlers) > 0)
+					<h2>Post submit handlers</h2>
+
+					@foreach ($available_post_submit_handlers as $post_submit_handler)
+						<div class="form-group">
+							<div class="row">
+								<div class="col-xs-2">
+									<div class="checkbox">
+										<label>
+											<input type="checkbox" name="post_submit_handlers[]" value="{{ $post_submit_handler->identifier() }}" @if (in_array($post_submit_handler->identifier(), $enabled_post_submit_handlers)) checked="checked" @endif>
+											{{ $post_submit_handler->name() }}
+										</label>
+									</div>
+								</div>
+								<div class="col-xs-10">
+									@include($post_submit_handler->adminTemplate(), ['hander_data' => isset($enabled_post_submit_handler_data[$post_submit_handler->identifier()]) ? $enabled_post_submit_handler_data[$post_submit_handler->identifier()] : []])
+								</div>
+							</div>
+						</div>
+					@endforeach
+				@endif
+
 				{{ Form::button('OK', ['name' => 'ok', 'value' => 'true', 'type' => 'submit', 'class' => 'btn btn-primary']) }}
 				{{ Form::button('Cancel', ['name' => 'cancel', 'value' => 'true', 'type' => 'submit', 'class' => 'btn btn-default']) }}
 

@@ -126,6 +126,30 @@ class EloquentWebFormsRepository implements WebFormsRepositoryInterface {
 		{
 			throw new ValidationException($invalid_fields);
 		}
+
+		$post_submit_handlers = [];
+
+		if (isset($data['post_submit_handlers']) && count($data['post_submit_handlers']) > 0)
+		{
+			foreach($data['post_submit_handlers'] as $post_submit_handler)
+			{
+				$handler = Coanda::webforms()->postSubmitHandler($post_submit_handler);
+
+				if ($handler)
+				{
+					$handler_data = isset($data['post_submit_handler_data'][$handler->identifier()]) ? $data['post_submit_handler_data'][$handler->identifier()] : [];
+
+					$post_submit_handlers[$handler->identifier()] = $handler->storeAdmin($handler_data);
+				}
+			}
+		}
+
+		if (count($post_submit_handlers) > 0)
+		{
+			$form->post_submit_handler_data = json_encode($post_submit_handlers);
+		}
+
+		$form->save();
 	}
 
 	public function addField($form_id, $field_type)
@@ -253,6 +277,11 @@ class EloquentWebFormsRepository implements WebFormsRepositoryInterface {
 		}
 
 		return $submission;
+	}
+
+	public function getUnprocessesSubmissions($limit)
+	{
+		return $this->submission_model->where('post_submit_handler_executed', '=', 0)->take($limit)->get();
 	}
 
 }

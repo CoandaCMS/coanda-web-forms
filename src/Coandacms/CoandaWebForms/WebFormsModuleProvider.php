@@ -23,6 +23,8 @@ class WebFormsModuleProvider implements \CoandaCMS\Coanda\CoandaModuleProvider {
 
     private $field_types = [];
 
+    private $post_submit_handlers = [];
+
     /**
      * @param \CoandaCMS\Coanda\Coanda $coanda
      */
@@ -55,6 +57,18 @@ class WebFormsModuleProvider implements \CoandaCMS\Coanda\CoandaModuleProvider {
                 $type = new $field_type;
 
                 $this->field_types[$type->identifier()] = $type;
+            }
+        }
+
+        $post_submit_handlers = Config::get('coanda-web-forms::post_submit_handlers');
+
+        foreach ($post_submit_handlers as $post_submit_handler)
+        {
+            if (class_exists($post_submit_handler))
+            {
+                $handler = new $post_submit_handler;
+
+                $this->post_submit_handlers[$handler->identifier()] = $handler;
             }
         }
 	}
@@ -198,5 +212,15 @@ class WebFormsModuleProvider implements \CoandaCMS\Coanda\CoandaModuleProvider {
     public function storeSubmission($data, $location_id)
     {
         $this->getWebFormRepo()->storeSubmission($data, $location_id);    
+    }
+
+    public function postSubmitHandlers()
+    {
+        return $this->post_submit_handlers;
+    }
+
+    public function postSubmitHandler($identifier)
+    {
+        return isset($this->post_submit_handlers[$identifier]) ? $this->post_submit_handlers[$identifier] : false;
     }
 }

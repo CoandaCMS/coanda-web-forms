@@ -27,7 +27,13 @@ class CoandaWebFormsServiceProvider extends ServiceProvider {
 	 * @return void
 	 */
 	public function register()
-	{		
+	{
+		$this->app['coandawebforms.processsubmissions'] = $this->app->share(function($app)
+		{
+		    return new \CoandaCMS\CoandaWebForms\Artisan\ProcessSubmissions($app);
+		});
+		
+		$this->commands('coandawebforms.processsubmissions');
 	}
 
 	/**

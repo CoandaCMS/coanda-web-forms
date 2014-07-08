@@ -26,6 +26,14 @@ class Submission extends Eloquent {
 		return $this->hasMany('CoandaCMS\CoandaWebForms\Repositories\Eloquent\Models\SubmissionField', 'submission_id');
 	}
 
+    /**
+     * @return mixed
+     */
+    public function form()
+    {
+        return $this->belongsTo('CoandaCMS\CoandaWebForms\Repositories\Eloquent\Models\WebForm', 'form_id');
+    }
+
     public function fieldsForHeadings($headings)
     {
         $fields = [];
@@ -46,5 +54,4 @@ class Submission extends Eloquent {
 
         return $fields;
     }
-
 }

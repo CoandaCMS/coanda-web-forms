@@ -1,6 +1,6 @@
 <?php namespace CoandaCMS\CoandaWebForms\Repositories\Eloquent\Models;
 
-use Eloquent;
+use Eloquent, Coanda;
 
 class WebForm extends Eloquent {
 
@@ -27,6 +27,42 @@ class WebForm extends Eloquent {
     public function firstFiveFields()
     {
         return $this->fields()->whereNotIn('type', ['content_header', 'content_text'])->take(5)->get();
+    }
+
+    public function postSubmitHandlerData()
+    {
+        $data = json_decode($this->post_submit_handler_data, true);
+
+        if (!is_array($data))
+        {
+            $data = [];
+        }
+
+        return $data;
+    }
+
+    public function enabledPostSubmitHandlers()
+    {
+        return array_keys($this->postSubmitHandlerData());
+    }
+
+    public function executePostSubmissionHandlers($submission)
+    {
+        $handler_data = $this->postSubmitHandlerData();
+
+        foreach ($this->enabledPostSubmitHandlers() as $post_submission_handler_identifier)
+        {
+            $post_submission_handler = Coanda::webforms()->postSubmitHandler($post_submission_handler_identifier);
+            
+            if ($post_submission_handler)
+            {
+                $post_submission_handler->process($submission, isset($handler_data[$post_submission_handler_identifier]) ? $handler_data[$post_submission_handler_identifier] : false);
+            }
+        }
+
+        $submission->post_submit_handler_executed = true;
+        $submission->save();
+
     }
 
 }

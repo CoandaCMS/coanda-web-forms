@@ -1,0 +1,2 @@
+<label for="admin_email_notification_notification_email">Notification email address</label>
+<input type="text" class="form-control" id="admin_email_notification_notification_email" name="post_submit_handler_data[admin_email_notification][notification_email]" value="{{ isset($hander_data['notification_email']) ? $hander_data['notification_email'] : '' }}">

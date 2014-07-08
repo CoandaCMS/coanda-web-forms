@@ -102,8 +102,11 @@ class WebFormsAdminController extends BaseController {
 			$invalid_fields = Session::has('invalid_fields') ? Session::get('invalid_fields') : [];
 
 			$field_types = Coanda::webforms()->fieldTypes();
+			$available_post_submit_handlers = Coanda::webforms()->postSubmitHandlers();
+			$enabled_post_submit_handlers = $form->enabledPostSubmitHandlers();
+			$enabled_post_submit_handler_data = $form->postSubmitHandlerData();
 
-			return View::make('coanda-web-forms::admin.edit', ['form' => $form, 'invalid_fields' => $invalid_fields, 'field_types' => $field_types]);
+			return View::make('coanda-web-forms::admin.edit', ['form' => $form, 'invalid_fields' => $invalid_fields, 'field_types' => $field_types, 'available_post_submit_handlers' => $available_post_submit_handlers, 'enabled_post_submit_handlers' => $enabled_post_submit_handlers, 'enabled_post_submit_handler_data' => $enabled_post_submit_handler_data]);
 		}
 		catch (WebFormNotFoundException $exception)
 		{

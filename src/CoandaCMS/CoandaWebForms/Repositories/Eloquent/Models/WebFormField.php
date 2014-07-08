@@ -41,28 +41,6 @@ class WebFormField extends Eloquent {
     public function setTypeData($data)
     {
         $this->type()->setTypeData($this, $data);
-
-    	// if (is_array($data))
-    	// {
-    	// 	if (isset($data['options']))
-    	// 	{
-    	// 		$valid_options = [];
-
-    	// 		foreach ($data['options'] as $option)
-    	// 		{
-    	// 			if ($option != '')
-    	// 			{
-    	// 				$valid_options[] = $option;
-    	// 			}
-    	// 		}
-
-    	// 		$data['options'] = $valid_options;
-    	// 	}
-    		
-    	// 	$data = json_encode($data);
-    	// }
-
-    	// $this->type_data = $data;
     }
 
 }
