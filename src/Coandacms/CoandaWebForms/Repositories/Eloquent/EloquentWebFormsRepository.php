@@ -139,6 +139,23 @@ class EloquentWebFormsRepository implements WebFormsRepositoryInterface {
 		$form->fields()->save($field);
 	}
 
+	public function addFieldFull($form_id, $field_type, $label, $required, $columns, $custom_data)
+	{
+		$form = $this->getForm($form_id);
+
+		$field = new $this->web_form_field_model;
+		$field->type = $field_type;
+		$field->order = $this->web_form_field_model->where('webform_id', '=', $form->id)->max('order') + 1;
+
+		$field->label = $label;
+		$field->required = $required;
+		$field->columns = $columns;
+
+		$field->setTypeData($custom_data);
+
+		$form->fields()->save($field);
+	}
+
 	public function removeField($form_id, $field_id)
 	{
 		$form = $this->getForm($form_id);
