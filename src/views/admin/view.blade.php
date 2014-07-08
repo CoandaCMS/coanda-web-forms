@@ -81,7 +81,7 @@
 
 							@set('columncounter', $columncounter + ($field->columns == 0 ? 12 : $field->columns))
 
-							@if ($columncounter > 12 && $field_count < $form->fields->count())
+							@if ($columncounter >= 12 && $field_count < $form->fields->count())
 									@set('columncounter', 0)
 								</div>
 								<div class="row">
