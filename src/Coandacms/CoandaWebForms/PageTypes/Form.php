@@ -51,6 +51,12 @@ class Form extends \CoandaCMS\Coanda\Pages\PageType {
 					'required' => true,
 					'generates_slug' => true
 				],
+				'content' => [
+					'name' => 'Content',
+					'identifier' => 'content',
+					'type' => 'html',
+					'required' => false
+				],
 				'form' => [
 					'name' => 'Form',
 					'identifier' => 'form',
