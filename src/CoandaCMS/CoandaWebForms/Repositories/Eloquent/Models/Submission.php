@@ -26,6 +26,11 @@ class Submission extends Eloquent {
 		return $this->hasMany('CoandaCMS\CoandaWebForms\Repositories\Eloquent\Models\SubmissionField', 'submission_id');
 	}
 
+    public function field($field_label)
+    {
+        return $this->fields()->where('label', '=', $field_label)->first();
+    }
+
     /**
      * @return mixed
      */
