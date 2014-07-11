@@ -55,24 +55,6 @@ class WebForm extends AttributeType {
     public function data($data, $parameters = [])
 	{
         return $data;
-        // $data = json_decode($data, true);
-
-        // $notification_email = '';
-
-        // if (is_array($data))
-        // {
-        //     $notification_email = $data['notification_email'];
-        // }
-
-        // // Get all the web form fields 
-        // $fields = Coanda::module('webforms')->formFields($parameters['page_id'], $parameters['version_number']);
-
-        // $return_data = [
-        //     'notification_email' => $notification_email,
-        //     'fields' => $fields
-        // ];
-
-        // return $return_data;
 	}
 
     /**
