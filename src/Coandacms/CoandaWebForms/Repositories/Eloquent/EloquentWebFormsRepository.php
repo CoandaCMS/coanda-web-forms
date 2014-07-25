@@ -180,6 +180,28 @@ class EloquentWebFormsRepository implements WebFormsRepositoryInterface {
 		$form->fields()->save($field);
 	}
 
+	public function addPostSubmitHandler($form, $handler_identifier, $handler_data = [])
+	{
+		$post_submit_handlers = json_decode($form->post_submit_handler_data, true);
+
+		if (!is_array($post_submit_handlers))
+		{
+			$post_submit_handlers = [];
+		}
+
+		$handler = Coanda::webforms()->postSubmitHandler($handler_identifier);
+
+		if ($handler)
+		{
+			$handler_data = isset($handler_data) ? $handler_data : [];
+
+			$post_submit_handlers[$handler->identifier()] = $handler->storeAdmin($handler_data);
+		}
+
+		$form->post_submit_handler_data = json_encode($post_submit_handlers);
+		$form->save();
+	}
+
 	public function removeField($form_id, $field_id)
 	{
 		$form = $this->getForm($form_id);
