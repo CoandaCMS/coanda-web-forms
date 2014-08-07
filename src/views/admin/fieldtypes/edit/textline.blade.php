@@ -1,1 +1,2 @@
-{{-- No further options --}}
+<label for="field_{{ $field->id }}_class">Class</label>
+<input class="form-control" type="text" id="field_{{ $field->id }}_class" name="field_{{ $field->id }}_custom[class]" value="{{ isset($field->typeData()['class']) ? $field->typeData()['class'] : '' }}">
