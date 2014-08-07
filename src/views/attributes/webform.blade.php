@@ -43,5 +43,5 @@
 
 	{{ Form::close() }}
 @else
-	<p>Error.</p>
+	<p>This form is no longer available.</p>
 @endif
