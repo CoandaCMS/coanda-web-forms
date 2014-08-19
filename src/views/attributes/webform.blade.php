@@ -37,9 +37,7 @@
 			@endforeach
 		</div>
 
-		<div class="form-group">
-			<button class="btn btn-default" name="submit_form">Submit</button>
-		</div>
+		<button class="btn btn-primary" name="submit_form">Submit</button>
 
 	{{ Form::close() }}
 @else
