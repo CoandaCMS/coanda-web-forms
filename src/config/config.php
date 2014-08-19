@@ -4,6 +4,14 @@ return array(
 
 	/*
 	|---------------------------
+	| Page type template
+	|---------------------------
+	|
+	*/
+	'template' => 'coanda-web-forms::pagetypes.form',
+	
+	/*
+	|---------------------------
 	| Available field types
 	|---------------------------
 	|
@@ -28,6 +36,10 @@ return array(
 	'post_submit_handlers' => [
 
 		'CoandaCMS\CoandaWebForms\PostSubmitHandlers\AdminEmailNotification',
+
+
+
+		'Abellio\Modules\LostProperty\LostPropertyAPINotify',
 
 	]
 
