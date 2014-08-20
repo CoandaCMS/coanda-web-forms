@@ -261,9 +261,7 @@ class EloquentWebFormsRepository implements WebFormsRepositoryInterface {
 
 			$submission = $this->submission_model->create([
 					'form_id' => $form->id,
-					'location_id' => $data['location_id'],
-					'version_number' => $data['version'],
-					'slug' => ''
+					'location_id' => $data['location_id']
 				]);
 
 			foreach ($form->fields as $field)
