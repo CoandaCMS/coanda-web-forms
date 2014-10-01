@@ -191,4 +191,39 @@ class WebFormsAdminController extends BaseController {
 			App::abort('404');
 		}
 	}
+
+    public function getDelete($form_id)
+    {
+        Coanda::checkAccess('webforms', 'edit');
+
+        try
+        {
+            $form = $this->webFormsRepository->getForm($form_id);
+
+            return View::make('coanda-web-forms::admin.delete', ['form' => $form]);
+        }
+        catch (WebFormNotFoundException $exception)
+        {
+            App::abort('404');
+        }
+    }
+
+    public function postDelete($form_id)
+    {
+        Coanda::checkAccess('webforms', 'edit');
+
+        try
+        {
+            $form = $this->webFormsRepository->getForm($form_id);
+
+            $form->delete();
+
+            return Redirect::to(Coanda::adminUrl('forms'))->with('form_removed', true);
+        }
+        catch (WebFormNotFoundException $exception)
+        {
+            App::abort('404');
+        }
+    }
+
 }

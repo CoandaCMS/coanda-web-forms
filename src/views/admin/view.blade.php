@@ -23,6 +23,15 @@
 <div class="row">
 	<div class="page-options col-md-12">
 		<a href="{{ Coanda::adminUrl('forms/edit/' . $form->id) }}" class="btn btn-primary">Edit</a>
+        <div class="btn-group">
+            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+                More
+                <span class="caret"></span>
+            </button>
+            <ul class="dropdown-menu">
+                <li><a href="{{ Coanda::adminUrl('forms/delete/' . $form->id) }}">Delete</a></li>
+            </ul>
+        </div>
 	</div>
 </div>
 

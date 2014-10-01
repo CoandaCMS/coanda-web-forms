@@ -1,5 +1,6 @@
 <?php namespace CoandaCMS\CoandaWebForms\Repositories\Eloquent\Models;
 
+use CoandaCMS\CoandaWebForms\Repositories\Eloquent\Models\SubmissionField;
 use Eloquent, Coanda;
 
 class WebForm extends Eloquent {
@@ -13,6 +14,20 @@ class WebForm extends Eloquent {
      * @var string
      */
     protected $table = 'webforms';
+
+    public static function boot()
+    {
+        parent::boot();
+
+        static::deleting( function($form)
+        {
+            $form->fields()->delete();
+
+            SubmissionField::join('webformsubmissions', 'webformsubmissions.id', '=', 'webformsubmissionfields.submission_id')->where('webformsubmissions.form_id', '=', $form->id)->delete();
+            $form->submissions()->delete();
+
+        });
+    }
 
     public function fields()
 	{

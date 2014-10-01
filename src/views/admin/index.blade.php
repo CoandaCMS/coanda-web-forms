@@ -36,6 +36,13 @@
 			</ul>
 			<div class="tab-content">
 				<div class="tab-pane active" id="forms">
+
+                    @if (Session::has('form_removed'))
+                        <div class="alert alert-success">
+                            Form removed
+                        </div>
+                    @endif
+
 					@if ($forms->count() > 0)
 						<table class="table table-striped">
 							@foreach ($forms as $form)
