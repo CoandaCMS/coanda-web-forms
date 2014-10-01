@@ -76,7 +76,7 @@ class WebForm extends AttributeType {
         }
         else
         {
-            $invalid_fields = Session::has('invalid_fields') ? Session::get('invalid_fields') : [];
+            $invalid_fields = Session::get('invalid_fields', []);
             $has_error = count($invalid_fields) > 0;
 
             return View::make('coanda-web-forms::attributes.webform', ['data' => $data, 'parameters' => $parameters, 'has_error' => $has_error, 'invalid_fields' => $invalid_fields ])->render();            
