@@ -5,16 +5,26 @@ use CoandaCMS\CoandaWebForms\Exceptions\FieldTypeRequiredException;
 
 class Dropdown extends FieldType {
 
+    /**
+     * @return string
+     */
     public function name()
     {
         return 'Dropdown';
     }
 
+    /**
+     * @return string
+     */
     public function identifier()
     {
         return 'dropdown';
     }
 
+    /**
+     * @param $field
+     * @param $data
+     */
     public function setTypeData($field, $data)
     {
         if (!is_array($data))

@@ -15,18 +15,32 @@ use CoandaCMS\CoandaWebForms\Exceptions\SubmissionNotFoundException;
 
 use CoandaCMS\Coanda\Exceptions\ValidationException;
 
-/**
- * Class EloquentWebFormsRepository
- * @package CoandaCMS\CoandaWebForms\Repositories\Eloquent
- */
 class EloquentWebFormsRepository implements WebFormsRepositoryInterface {
 
+    /**
+     * @var WebFormModel
+     */
     private $web_form_model;
+    /**
+     * @var WebFormFieldModel
+     */
     private $web_form_field_model;
 
+    /**
+     * @var SubmissionModel
+     */
     private $submission_model;
+    /**
+     * @var SubmissionFieldModel
+     */
     private $submission_field_model;
 
+    /**
+     * @param WebFormModel $web_form_model
+     * @param WebFormFieldModel $web_form_field_model
+     * @param SubmissionModel $submission_model
+     * @param SubmissionFieldModel $submission_field_model
+     */
     public function __construct(WebFormModel $web_form_model, WebFormFieldModel $web_form_field_model, SubmissionModel $submission_model, SubmissionFieldModel $submission_field_model)
 	{
 		$this->web_form_model = $web_form_model;
@@ -38,7 +52,6 @@ class EloquentWebFormsRepository implements WebFormsRepositoryInterface {
 
     /**
      * @param $per_page
-     * @param $page
      * @return mixed
      */
     public function forms($per_page)
@@ -46,12 +59,20 @@ class EloquentWebFormsRepository implements WebFormsRepositoryInterface {
 		return $this->web_form_model->paginate($per_page);
 	}
 
+    /**
+     * @return mixed
+     */
     public function formlist()
 	{
 		return $this->web_form_model->get();
 	}
 
-	public function createForm($data)
+    /**
+     * @param $data
+     * @return mixed
+     * @throws ValidationException
+     */
+    public function createForm($data)
 	{
 		$invalid_fields = [];
 
@@ -68,7 +89,12 @@ class EloquentWebFormsRepository implements WebFormsRepositoryInterface {
 		return $this->web_form_model->create(['name' => $data['name']]);
 	}
 
-	public function getForm($id)
+    /**
+     * @param $id
+     * @return mixed
+     * @throws WebFormNotFoundException
+     */
+    public function getForm($id)
 	{
 		$form = $this->web_form_model->find($id);
 
@@ -80,7 +106,13 @@ class EloquentWebFormsRepository implements WebFormsRepositoryInterface {
 		return $form;
 	}
 
-	public function storeForm($id, $data)
+    /**
+     * @param $id
+     * @param $data
+     * @throws ValidationException
+     * @throws WebFormNotFoundException
+     */
+    public function storeForm($id, $data)
 	{
 		$form = $this->getForm($id);
 
@@ -152,7 +184,12 @@ class EloquentWebFormsRepository implements WebFormsRepositoryInterface {
 		$form->save();
 	}
 
-	public function addField($form_id, $field_type)
+    /**
+     * @param $form_id
+     * @param $field_type
+     * @throws WebFormNotFoundException
+     */
+    public function addField($form_id, $field_type)
 	{
 		$form = $this->getForm($form_id);
 
@@ -163,7 +200,16 @@ class EloquentWebFormsRepository implements WebFormsRepositoryInterface {
 		$form->fields()->save($field);
 	}
 
-	public function addFieldFull($form_id, $field_type, $label, $required, $columns, $custom_data)
+    /**
+     * @param $form_id
+     * @param $field_type
+     * @param $label
+     * @param $required
+     * @param $columns
+     * @param $custom_data
+     * @throws WebFormNotFoundException
+     */
+    public function addFieldFull($form_id, $field_type, $label, $required, $columns, $custom_data)
 	{
 		$form = $this->getForm($form_id);
 
@@ -180,7 +226,12 @@ class EloquentWebFormsRepository implements WebFormsRepositoryInterface {
 		$form->fields()->save($field);
 	}
 
-	public function addPostSubmitHandler($form, $handler_identifier, $handler_data = [])
+    /**
+     * @param $form
+     * @param $handler_identifier
+     * @param array $handler_data
+     */
+    public function addPostSubmitHandler($form, $handler_identifier, $handler_data = [])
 	{
 		$post_submit_handlers = json_decode($form->post_submit_handler_data, true);
 
@@ -202,14 +253,23 @@ class EloquentWebFormsRepository implements WebFormsRepositoryInterface {
 		$form->save();
 	}
 
-	public function removeField($form_id, $field_id)
+    /**
+     * @param $form_id
+     * @param $field_id
+     * @throws WebFormNotFoundException
+     */
+    public function removeField($form_id, $field_id)
 	{
 		$form = $this->getForm($form_id);
 
 		$form->fields()->whereId($field_id)->delete();
 	}
 
-	public function fieldHeadings($form)
+    /**
+     * @param $form
+     * @return array
+     */
+    public function fieldHeadings($form)
 	{
 		$headings = [];
 
@@ -221,7 +281,12 @@ class EloquentWebFormsRepository implements WebFormsRepositoryInterface {
 		return $headings;
 	}
 
-	public function storeSubmission($data, $location_id)
+    /**
+     * @param $data
+     * @param $location_id
+     * @throws ValidationException
+     */
+    public function storeSubmission($data, $location_id)
 	{
 		if (!isset($data['form_id']))
 		{
@@ -287,7 +352,12 @@ class EloquentWebFormsRepository implements WebFormsRepositoryInterface {
 		}
 	}
 
-	public function getSubmission($id)
+    /**
+     * @param $id
+     * @return mixed
+     * @throws SubmissionNotFoundException
+     */
+    public function getSubmission($id)
 	{
 		$submission = $this->submission_model->find($id);
 
@@ -299,7 +369,11 @@ class EloquentWebFormsRepository implements WebFormsRepositoryInterface {
 		return $submission;
 	}
 
-	public function getUnprocessesSubmissions($limit)
+    /**
+     * @param $limit
+     * @return mixed
+     */
+    public function getUnprocessesSubmissions($limit)
 	{
 		return $this->submission_model->where('post_submit_handler_executed', '=', 0)->take($limit)->get();
 	}

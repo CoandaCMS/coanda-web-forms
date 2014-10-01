@@ -5,16 +5,28 @@ use CoandaCMS\CoandaWebForms\Exceptions\FieldTypeRequiredException;
 
 class Textline extends FieldType {
 
+    /**
+     * @return string
+     */
     public function name()
     {
         return 'Text line';
     }
 
+    /**
+     * @return string
+     */
     public function identifier()
     {
         return 'textline';
     }
 
+    /**
+     * @param $field
+     * @param $data
+     * @return mixed
+     * @throws FieldTypeRequiredException
+     */
     public function handleSubmissionData($field, $data)
     {
         if ((!is_string($data) || $data == '') && $field->required)

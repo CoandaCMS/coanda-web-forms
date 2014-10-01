@@ -1,17 +1,21 @@
 <?php namespace CoandaCMS\CoandaWebForms\Controllers\Admin;
 
 use View, App, Coanda, Redirect, Input, Session;
-
 use CoandaCMS\Coanda\Controllers\BaseController;
-
 use CoandaCMS\Coanda\Exceptions\ValidationException;
 use CoandaCMS\CoandaWebForms\Exceptions\WebFormNotFoundException;
 use CoandaCMS\CoandaWebForms\Exceptions\SubmissionNotFoundException;
 
 class WebFormsAdminController extends BaseController {
 
-	private $webFormsRepository;
+    /**
+     * @var \CoandaCMS\CoandaWebForms\Repositories\WebFormsRepositoryInterface
+     */
+    private $webFormsRepository;
 
+    /**
+     * @param \CoandaCMS\CoandaWebForms\Repositories\WebFormsRepositoryInterface $webFormsRepository
+     */
     public function __construct(\CoandaCMS\CoandaWebForms\Repositories\WebFormsRepositoryInterface $webFormsRepository)
 	{
 		$this->beforeFilter('csrf', array('on' => 'post'));
@@ -19,6 +23,9 @@ class WebFormsAdminController extends BaseController {
 		$this->webFormsRepository = $webFormsRepository;
 	}
 
+    /**
+     * @return mixed
+     */
     public function getIndex()
 	{
 		Coanda::checkAccess('webforms', 'view');
@@ -28,7 +35,10 @@ class WebFormsAdminController extends BaseController {
 		return View::make('coanda-web-forms::admin.index', [ 'forms' => $forms ]);
 	}
 
-	public function getView($form_id)
+    /**
+     * @param $form_id
+     */
+    public function getView($form_id)
 	{
 		Coanda::checkAccess('webforms', 'view');
 
@@ -45,7 +55,10 @@ class WebFormsAdminController extends BaseController {
 		}
 	}
 
-	public function getSubmission($submission_id)
+    /**
+     * @param $submission_id
+     */
+    public function getSubmission($submission_id)
 	{
 		Coanda::checkAccess('webforms', 'view');
 
@@ -66,6 +79,9 @@ class WebFormsAdminController extends BaseController {
 		}
 	}
 
+    /**
+     * @return mixed
+     */
     public function getAdd()
 	{
 		Coanda::checkAccess('webforms', 'edit');
@@ -75,6 +91,9 @@ class WebFormsAdminController extends BaseController {
 		return View::make('coanda-web-forms::admin.add', ['invalid_fields' => $invalid_fields]);
 	}
 
+    /**
+     * @return mixed
+     */
     public function postAdd()
 	{
 		Coanda::checkAccess('webforms', 'edit');
@@ -91,7 +110,10 @@ class WebFormsAdminController extends BaseController {
 		}
 	}
 
-	public function getEdit($form_id)
+    /**
+     * @param $form_id
+     */
+    public function getEdit($form_id)
 	{
 		Coanda::checkAccess('webforms', 'edit');
 
@@ -114,7 +136,10 @@ class WebFormsAdminController extends BaseController {
 		}
 	}
 
-	public function postEdit($form_id)
+    /**
+     * @param $form_id
+     */
+    public function postEdit($form_id)
 	{
 		Coanda::checkAccess('webforms', 'edit');
 
@@ -192,6 +217,9 @@ class WebFormsAdminController extends BaseController {
 		}
 	}
 
+    /**
+     * @param $form_id
+     */
     public function getDelete($form_id)
     {
         Coanda::checkAccess('webforms', 'edit');
@@ -208,6 +236,9 @@ class WebFormsAdminController extends BaseController {
         }
     }
 
+    /**
+     * @param $form_id
+     */
     public function postDelete($form_id)
     {
         Coanda::checkAccess('webforms', 'edit');

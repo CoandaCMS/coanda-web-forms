@@ -6,16 +6,26 @@ use View, Mail, Config;
 
 class AdminEmailNotification extends PostSubmitHandler {
 
+    /**
+     * @return string
+     */
     public function name()
     {
     	return 'Admin notification email';
     }
 
+    /**
+     * @return string
+     */
     public function identifier()
     {
     	return 'admin_email_notification';
     }
 
+    /**
+     * @param $submission
+     * @param $data
+     */
     public function process($submission, $data)
     {
     	$notification_email = isset($data['notification_email']) ? $data['notification_email'] : false;

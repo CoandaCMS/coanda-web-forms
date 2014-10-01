@@ -76,7 +76,9 @@ class Form extends \CoandaCMS\Coanda\Pages\PageType {
 	}
 
     /**
-     * @return string
+     * @param $version
+     * @param array $data
+     * @return mixed
      */
     public function template($version, $data = [])
 	{

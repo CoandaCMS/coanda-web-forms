@@ -50,6 +50,7 @@ class WebForm extends AttributeType {
 
     /**
      * @param $data
+     * @param array $parameters
      * @return mixed
      */
     public function data($data, $parameters = [])

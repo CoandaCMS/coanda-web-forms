@@ -2,10 +2,6 @@
 
 use Eloquent, Coanda, App;
 
-/**
- * Class SubmissionField
- * @package CoandaCMS\CoandaWebForms\Repositories\Eloquent\Models
- */
 class SubmissionField extends Eloquent {
 
     /**
@@ -18,6 +14,9 @@ class SubmissionField extends Eloquent {
      */
     protected $table = 'webformsubmissionfields';
 
+    /**
+     * @return mixed
+     */
     public function type()
     {
         return Coanda::webforms()->fieldType($this->type);
@@ -44,11 +43,17 @@ class SubmissionField extends Eloquent {
 		return $this->belongsTo('CoandaCMS\CoandaWebForms\Repositories\Eloquent\Models\SubmissionField', 'submission_id');
 	}
 
+    /**
+     * @return mixed
+     */
     public function getDisplayLineAttribute()
     {
         return $this->type()->displayLine($this);
     }
 
+    /**
+     * @return mixed
+     */
     public function getDisplayFullAttribute()
     {
         return $this->type()->displayFull($this);

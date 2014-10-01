@@ -5,10 +5,6 @@ use Route, App, Config, Input, Coanda, Redirect;
 use CoandaCMS\Coanda\Exceptions\ValidationException;
 use CoandaCMS\CoandaWebForms\Exceptions\WebFormNotFoundException;
 
-/**
- * Class WebFormsModuleProvider
- * @package CoandaCMS\CoandaWebForms
- */
 class WebFormsModuleProvider implements \CoandaCMS\Coanda\CoandaModuleProvider {
 
     /**
@@ -21,12 +17,19 @@ class WebFormsModuleProvider implements \CoandaCMS\Coanda\CoandaModuleProvider {
      */
     private $webformRepo;
 
+    /**
+     * @var array
+     */
     private $field_types = [];
 
+    /**
+     * @var array
+     */
     private $post_submit_handlers = [];
 
     /**
      * @param \CoandaCMS\Coanda\Coanda $coanda
+     * @return mixed|void
      */
     public function boot(\CoandaCMS\Coanda\Coanda $coanda)
 	{
@@ -157,6 +160,7 @@ class WebFormsModuleProvider implements \CoandaCMS\Coanda\CoandaModuleProvider {
 
     /**
      * @param $coanda
+     * @return mixed|void
      */
     public function buildAdminMenu($coanda)
     {
@@ -166,11 +170,18 @@ class WebFormsModuleProvider implements \CoandaCMS\Coanda\CoandaModuleProvider {
         }
     }
 
+    /**
+     * @return array
+     */
     public function fieldTypes()
     {
         return $this->field_types;
     }
 
+    /**
+     * @param $identifier
+     * @return bool
+     */
     public function fieldType($identifier)
     {
         return isset($this->field_types[$identifier]) ? $this->field_types[$identifier] : false;
@@ -189,11 +200,18 @@ class WebFormsModuleProvider implements \CoandaCMS\Coanda\CoandaModuleProvider {
         return $this->webformRepo;
     }
 
+    /**
+     * @return mixed
+     */
     public function availableForms()
     {
         return $this->getWebFormRepo()->formlist();
     }
 
+    /**
+     * @param $id
+     * @return bool
+     */
     public function getForm($id)
     {
         try
@@ -214,11 +232,18 @@ class WebFormsModuleProvider implements \CoandaCMS\Coanda\CoandaModuleProvider {
         $this->getWebFormRepo()->storeSubmission($data, $location_id);    
     }
 
+    /**
+     * @return array
+     */
     public function postSubmitHandlers()
     {
         return $this->post_submit_handlers;
     }
 
+    /**
+     * @param $identifier
+     * @return bool
+     */
     public function postSubmitHandler($identifier)
     {
         return isset($this->post_submit_handlers[$identifier]) ? $this->post_submit_handlers[$identifier] : false;

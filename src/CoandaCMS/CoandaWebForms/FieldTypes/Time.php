@@ -5,16 +5,28 @@ use CoandaCMS\CoandaWebForms\Exceptions\FieldTypeRequiredException;
 
 class Time extends FieldType {
 
+    /**
+     * @return string
+     */
     public function name()
     {
         return 'Time';
     }
 
+    /**
+     * @return string
+     */
     public function identifier()
     {
         return 'time';
     }
 
+    /**
+     * @param $field
+     * @param $data
+     * @return string
+     * @throws FieldTypeRequiredException
+     */
     public function handleSubmissionData($field, $data)
     {
         $invalid = false;

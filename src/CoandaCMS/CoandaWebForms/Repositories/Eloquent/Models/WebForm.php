@@ -1,6 +1,5 @@
 <?php namespace CoandaCMS\CoandaWebForms\Repositories\Eloquent\Models;
 
-use CoandaCMS\CoandaWebForms\Repositories\Eloquent\Models\SubmissionField;
 use Eloquent, Coanda;
 
 class WebForm extends Eloquent {
@@ -15,6 +14,9 @@ class WebForm extends Eloquent {
      */
     protected $table = 'webforms';
 
+    /**
+     *
+     */
     public static function boot()
     {
         parent::boot();
@@ -29,21 +31,33 @@ class WebForm extends Eloquent {
         });
     }
 
+    /**
+     * @return mixed
+     */
     public function fields()
 	{
 		return $this->hasMany('CoandaCMS\CoandaWebForms\Repositories\Eloquent\Models\WebFormField', 'webform_id')->orderBy('order', 'asc');
 	}
 
+    /**
+     * @return mixed
+     */
     public function submissions()
     {
         return $this->hasMany('CoandaCMS\CoandaWebForms\Repositories\Eloquent\Models\Submission', 'form_id')->orderBy('created_at', 'desc');
     }
 
+    /**
+     * @return mixed
+     */
     public function firstFiveFields()
     {
         return $this->fields()->whereNotIn('type', ['content_header', 'content_text'])->take(5)->get();
     }
 
+    /**
+     * @return array|mixed
+     */
     public function postSubmitHandlerData()
     {
         $data = json_decode($this->post_submit_handler_data, true);
@@ -56,11 +70,17 @@ class WebForm extends Eloquent {
         return $data;
     }
 
+    /**
+     * @return array
+     */
     public function enabledPostSubmitHandlers()
     {
         return array_keys($this->postSubmitHandlerData());
     }
 
+    /**
+     * @param $submission
+     */
     public function executePostSubmissionHandlers($submission)
     {
         $handler_data = $this->postSubmitHandlerData();

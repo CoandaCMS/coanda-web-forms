@@ -5,16 +5,28 @@ use CoandaCMS\CoandaWebForms\Exceptions\FieldTypeRequiredException;
 
 class Number extends FieldType {
 
+    /**
+     * @return string
+     */
     public function name()
     {
         return 'Number';
     }
 
+    /**
+     * @return string
+     */
     public function identifier()
     {
         return 'number';
     }
 
+    /**
+     * @param $field
+     * @param $data
+     * @return mixed
+     * @throws FieldTypeRequiredException
+     */
     public function handleSubmissionData($field, $data)
     {
         // If it is required and hasn't been entered, then complain...

@@ -5,16 +5,26 @@ use CoandaCMS\CoandaWebForms\Exceptions\FieldTypeRequiredException;
 
 class Radiobuttons extends FieldType {
 
+    /**
+     * @return string
+     */
     public function name()
     {
         return 'Radio buttons';
     }
 
+    /**
+     * @return string
+     */
     public function identifier()
     {
         return 'radiobuttons';
     }
 
+    /**
+     * @param $field
+     * @param $data
+     */
     public function setTypeData($field, $data)
     {
         if (!is_array($data))

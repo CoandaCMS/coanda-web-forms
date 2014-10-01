@@ -7,16 +7,28 @@ use CoandaCMS\CoandaWebForms\Exceptions\FieldTypeRequiredException;
 
 class File extends FieldType {
 
+    /**
+     * @return string
+     */
     public function name()
     {
         return 'File upload';
     }
 
+    /**
+     * @return string
+     */
     public function identifier()
     {
         return 'file';
     }
 
+    /**
+     * @param $field
+     * @param $data
+     * @return string
+     * @throws FieldTypeRequiredException
+     */
     public function handleSubmissionData($field, $data)
     {
         $file = Input::hasFile('field_' . $field->id) ? Input::file('field_' . $field->id) : false;
@@ -44,6 +56,10 @@ class File extends FieldType {
         return '';
     }
 
+    /**
+     * @param $field
+     * @return string
+     */
     public function displayLine($field)
     {
         $data = json_decode($field->field_data, true);
@@ -56,6 +72,10 @@ class File extends FieldType {
         return '';
     }
 
+    /**
+     * @param $field
+     * @return string
+     */
     public function displayFull($field)
     {
         $data = json_decode($field->field_data, true);

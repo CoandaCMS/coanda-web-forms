@@ -5,16 +5,28 @@ use CoandaCMS\CoandaWebForms\Exceptions\FieldTypeRequiredException;
 
 class Email extends FieldType {
 
+    /**
+     * @return string
+     */
     public function name()
     {
         return 'Email address';
     }
 
+    /**
+     * @return string
+     */
     public function identifier()
     {
         return 'email';
     }
 
+    /**
+     * @param $field
+     * @param $data
+     * @return mixed
+     * @throws FieldTypeRequiredException
+     */
     public function handleSubmissionData($field, $data)
     {
         if ((!is_string($data) || $data == '') && $field->required)

@@ -2,10 +2,6 @@
 
 use Eloquent, Coanda, App;
 
-/**
- * Class Submission
- * @package CoandaCMS\CoandaWebForms\Repositories\Eloquent\Models
- */
 class Submission extends Eloquent {
 
     /**
@@ -26,6 +22,10 @@ class Submission extends Eloquent {
 		return $this->hasMany('CoandaCMS\CoandaWebForms\Repositories\Eloquent\Models\SubmissionField', 'submission_id');
 	}
 
+    /**
+     * @param $field_label
+     * @return mixed
+     */
     public function field($field_label)
     {
         return $this->fields()->where('label', '=', $field_label)->first();
@@ -39,6 +39,10 @@ class Submission extends Eloquent {
         return $this->belongsTo('CoandaCMS\CoandaWebForms\Repositories\Eloquent\Models\WebForm', 'form_id');
     }
 
+    /**
+     * @param $headings
+     * @return array
+     */
     public function fieldsForHeadings($headings)
     {
         $fields = [];
