@@ -82,4 +82,12 @@ class Form extends \CoandaCMS\Coanda\Pages\PageType {
 	{
 		return \Config::get('coanda-web-forms::config.page_type_template');
 	}
+
+    /**
+     * @return bool
+     */
+    public function canStaticCache()
+    {
+        return false;
+    }
 }
