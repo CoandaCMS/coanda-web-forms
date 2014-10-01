@@ -25,6 +25,7 @@ return array(
 		'CoandaCMS\CoandaWebForms\FieldTypes\Dropdown',
 		'CoandaCMS\CoandaWebForms\FieldTypes\Radiobuttons',
 		'CoandaCMS\CoandaWebForms\FieldTypes\Date',
+        'CoandaCMS\CoandaWebForms\FieldTypes\Time',
 		'CoandaCMS\CoandaWebForms\FieldTypes\Number',
 		'CoandaCMS\CoandaWebForms\FieldTypes\File',
 
@@ -34,13 +35,7 @@ return array(
 	],
 
 	'post_submit_handlers' => [
-
 		'CoandaCMS\CoandaWebForms\PostSubmitHandlers\AdminEmailNotification',
-
-
-
-		'Abellio\Modules\LostProperty\LostPropertyAPINotify',
-
 	]
 
 );
