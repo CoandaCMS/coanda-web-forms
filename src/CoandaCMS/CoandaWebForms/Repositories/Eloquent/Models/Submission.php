@@ -7,12 +7,12 @@ class Submission extends Eloquent {
     /**
      * @var array
      */
-    protected $fillable = ['form_id', 'location_id', 'version', 'slug'];
+    protected $fillable = ['form_id', 'page_id'];
 
     /**
      * @var string
      */
-    protected $table = 'webformsubmissions';
+    protected $table = 'coanda_webformsubmissions';
 
     /**
      * @return mixed

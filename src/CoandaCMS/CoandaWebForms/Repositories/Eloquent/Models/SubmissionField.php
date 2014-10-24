@@ -7,12 +7,12 @@ class SubmissionField extends Eloquent {
     /**
      * @var array
      */
-    protected $fillable = ['submission_id', 'field_id', 'type', 'label', 'field_data'];
+    protected $fillable = ['submission_id', 'field_id', 'type', 'label', 'identifier', 'field_data'];
 
     /**
      * @var string
      */
-    protected $table = 'webformsubmissionfields';
+    protected $table = 'coanda_webformsubmissionfields';
 
     /**
      * @return mixed

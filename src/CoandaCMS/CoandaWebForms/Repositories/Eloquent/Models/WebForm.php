@@ -12,7 +12,7 @@ class WebForm extends Eloquent {
     /**
      * @var string
      */
-    protected $table = 'webforms';
+    protected $table = 'coanda_webforms';
 
     /**
      *

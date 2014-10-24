@@ -12,27 +12,27 @@ class CreateFormSubmissionTable extends Migration {
 	 */
 	public function up()
 	{
-		Schema::create('webformsubmissions', function ($table) {
+		Schema::create('coanda_webformsubmissions', function ($table) {
 
 			$table->increments('id');
 
 			$table->integer('form_id');
-			$table->integer('location_id');
-			$table->integer('version');
-			$table->string('slug');
+			$table->integer('page_id');
+            $table->boolean('post_submit_handler_executed');
 
 			$table->timestamps();
 
 		});
 
-		Schema::create('webformsubmissionfields', function ($table) {
+		Schema::create('coanda_webformsubmissionfields', function ($table) {
 
 			$table->increments('id');
 
 			$table->integer('submission_id');
 			$table->integer('field_id');
 			$table->string('type');
-			$table->string('label');
+			$table->string('identifier');
+            $table->text('label');
 			$table->text('field_data')->nullable();
 
 			$table->timestamps();
@@ -47,8 +47,8 @@ class CreateFormSubmissionTable extends Migration {
 	 */
 	public function down()
 	{
-		Schema::drop('webformsubmissions');
-		Schema::drop('webformsubmissionfields');
+		Schema::drop('coanda_webformsubmissions');
+		Schema::drop('coanda_webformsubmissionfields');
 	}
 
 }

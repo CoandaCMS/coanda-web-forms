@@ -11,12 +11,25 @@ class WebFormField extends Eloquent {
     /**
      * @var array
      */
-    protected $fillable = ['webform_id', 'label', 'type', 'type_data', 'validation_rules', 'order'];
+    protected $fillable = ['webform_id', 'identifier', 'label', 'type', 'type_data', 'validation_rules', 'order'];
 
     /**
      * @var string
      */
-    protected $table = 'webformfields';
+    protected $table = 'coanda_webformfields';
+
+    /**
+     * @param array $options
+     */
+    public function save(array $options = [])
+    {
+        if (!$this->identifier || $this->identifier == '')
+        {
+            $this->identifier = \CoandaCMS\Coanda\Urls\Slugifier::convert($this->label);
+        }
+
+        parent::save($options);
+    }
 
     /**
      * @return mixed

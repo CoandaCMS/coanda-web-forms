@@ -283,10 +283,10 @@ class EloquentWebFormsRepository implements WebFormsRepositoryInterface {
 
     /**
      * @param $data
-     * @param $location_id
+     * @param $page_id
      * @throws ValidationException
      */
-    public function storeSubmission($data, $location_id)
+    public function storeSubmission($data, $page_id)
 	{
 		if (!isset($data['form_id']))
 		{
@@ -326,7 +326,7 @@ class EloquentWebFormsRepository implements WebFormsRepositoryInterface {
 
 			$submission = $this->submission_model->create([
 					'form_id' => $form->id,
-					'location_id' => $data['location_id']
+					'page_id' => $page_id
 				]);
 
 			foreach ($form->fields as $field)
@@ -339,6 +339,7 @@ class EloquentWebFormsRepository implements WebFormsRepositoryInterface {
 				$submission_field = new $this->submission_field_model;
 
 				$submission_field->label = $field->label;
+                $submission_field->identifier = $field->identifier;
 				$submission_field->field_id = $field->id;
 				$submission_field->type = $field->type;
 				$submission_field->field_data = $field_values['field_' . $field->id];

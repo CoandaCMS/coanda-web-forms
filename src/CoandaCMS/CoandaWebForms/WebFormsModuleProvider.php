@@ -92,29 +92,22 @@ class WebFormsModuleProvider implements \CoandaCMS\Coanda\CoandaModuleProvider {
 	{
         Route::post('_webformhandler', ['before' => 'csrf', function () {
 
-            $location_id = Input::has('location_id') ? Input::get('location_id') : false;
+            $page = Coanda::module('pages')->getPage(Input::get('page_id'));
 
-            if (!$location_id)
-            {
-                App::abort('404');
-            }
-
-            $location = Coanda::module('pages')->getLocation($location_id);
-
-            if (!$location)
+            if (!$page)
             {
                 App::abort('404');
             }
 
             try
             {
-                Coanda::webforms()->storeSubmission(Input::all(), $location_id);
+                Coanda::webforms()->storeSubmission(Input::all(), $page->id);
 
-                return Redirect::to(url($location->slug))->with('submission_stored', true);
+                return Redirect::to(url($page->slug))->with('submission_stored', true);
             }
             catch (ValidationException $exception)
             {
-                return Redirect::to(url($location->slug))->with('invalid_fields', $exception->getInvalidFields())->withInput();
+                return Redirect::to(url($page->slug))->with('invalid_fields', $exception->getInvalidFields())->withInput();
             }
 
         }]);
@@ -227,9 +220,9 @@ class WebFormsModuleProvider implements \CoandaCMS\Coanda\CoandaModuleProvider {
     /**
      * @param $data
      */
-    public function storeSubmission($data, $location_id)
+    public function storeSubmission($data, $page_id)
     {
-        $this->getWebFormRepo()->storeSubmission($data, $location_id);    
+        $this->getWebFormRepo()->storeSubmission($data, $page_id);
     }
 
     /**

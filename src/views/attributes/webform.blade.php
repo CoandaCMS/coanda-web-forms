@@ -5,8 +5,6 @@
 
 		<input type="hidden" name="form_id" value="{{ $form->id }}">
 		<input type="hidden" name="page_id" value="{{ $parameters['page']->id }}">
-		<input type="hidden" name="version" value="{{ $parameters['page']->current_version }}">
-		<input type="hidden" name="location_id" value="{{ $parameters['pagelocation']->id }}">
 
 		@if ($has_error)
 			<div class="alert alert-danger">
