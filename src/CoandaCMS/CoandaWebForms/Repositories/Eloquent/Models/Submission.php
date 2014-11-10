@@ -23,6 +23,15 @@ class Submission extends Eloquent {
 	}
 
     /**
+     * @param $identifier
+     * @return mixed
+     */
+    public function fieldByIdentifier($identifier)
+    {
+        return $this->fields()->where('identifier', '=', $identifier)->first();
+    }
+
+    /**
      * @param $field_label
      * @return mixed
      */
