@@ -48,11 +48,19 @@ class WebForm extends Eloquent {
     }
 
     /**
+     * @param bool $limit
      * @return mixed
      */
-    public function firstFiveFields()
+    public function dataHeadings($limit = false)
     {
-        return $this->fields()->whereNotIn('type', ['content_header', 'content_text'])->take(5)->get();
+        $query = $this->fields()->whereNotIn('type', ['content_header', 'content_text']);
+
+        if ($limit)
+        {
+            $query->take($limit);
+        }
+
+        return $query->get();
     }
 
     /**

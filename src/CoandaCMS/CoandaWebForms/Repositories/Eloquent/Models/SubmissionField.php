@@ -58,4 +58,19 @@ class SubmissionField extends Eloquent {
     {
         return $this->type()->displayFull($this);
     }
+
+    /**
+     * @return mixed
+     */
+    public function getDisplayExportAttribute()
+    {
+        $type = $this->type();
+
+        if (method_exists($type, 'displayExport'))
+        {
+            return $type->displayExport($this);
+        }
+
+        return $type->displayFull($this);
+    }
 }

@@ -10,7 +10,8 @@
     ],
     "require": {
         "php": ">=5.4.0",
-        "coandacms/coanda-core": "dev-master"
+        "coandacms/coanda-core": "dev-master",
+        "league/csv": "5.*"
     },
     "autoload": {
         "classmap": [

@@ -34,6 +34,13 @@ class CoandaWebFormsServiceProvider extends ServiceProvider {
 		});
 		
 		$this->commands('coandawebforms.processsubmissions');
+
+		$this->app['coandawebforms.generatesubmissioncsv'] = $this->app->share(function($app)
+		{
+			return new \CoandaCMS\CoandaWebForms\Artisan\GenerateSubmissionsCsv($app);
+		});
+
+		$this->commands('coandawebforms.generatesubmissioncsv');
 	}
 
 	/**

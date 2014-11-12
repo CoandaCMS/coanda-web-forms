@@ -13,14 +13,21 @@ class WebFormsAdminController extends BaseController {
      */
     private $webFormsRepository;
 
-    /**
-     * @param \CoandaCMS\CoandaWebForms\Repositories\WebFormsRepositoryInterface $webFormsRepository
+	/**
+	 * @var \CoandaCMS\CoandaWebForms\Exporters\CsvExporter
      */
-    public function __construct(\CoandaCMS\CoandaWebForms\Repositories\WebFormsRepositoryInterface $webFormsRepository)
+	private $exporter;
+
+	/**
+	 * @param \CoandaCMS\CoandaWebForms\Repositories\WebFormsRepositoryInterface $webFormsRepository
+	 * @param \CoandaCMS\CoandaWebForms\Exporters\CsvExporter $exporter
+	 */
+    public function __construct(\CoandaCMS\CoandaWebForms\Repositories\WebFormsRepositoryInterface $webFormsRepository, \CoandaCMS\CoandaWebForms\Exporters\CsvExporter $exporter)
 	{
 		$this->beforeFilter('csrf', array('on' => 'post'));
 
 		$this->webFormsRepository = $webFormsRepository;
+		$this->exporter = $exporter;
 	}
 
     /**
@@ -45,9 +52,30 @@ class WebFormsAdminController extends BaseController {
 		try
 		{
 			$form = $this->webFormsRepository->getForm($form_id);
-			$field_headings = $this->webFormsRepository->fieldHeadings($form);
+			$field_headings = $this->webFormsRepository->dataHeadings($form, 5);
 
 			return View::make('coanda-web-forms::admin.view', ['form' => $form, 'field_headings' => $field_headings]);
+		}
+		catch (WebFormNotFoundException $exception)
+		{
+			App::abort('404');
+		}
+	}
+
+	/**
+	 * @param $form_id
+	 */
+	public function getDownload($form_id)
+	{
+		Coanda::checkAccess('webforms', 'view');
+
+		try
+		{
+			$form = $this->webFormsRepository->getForm($form_id);
+			$file_name = $form->name . '-Submissions-' . date('d-m-Y-H-i-s', time());
+
+			$this->exporter->exportToBrowser($form, $file_name);
+			exit;
 		}
 		catch (WebFormNotFoundException $exception)
 		{

@@ -23,6 +23,7 @@
 <div class="row">
 	<div class="page-options col-md-12">
 		<a href="{{ Coanda::adminUrl('forms/edit/' . $form->id) }}" class="btn btn-primary">Edit</a>
+		<a href="{{ Coanda::adminUrl('forms/download/' . $form->id) }}" class="btn btn-default">Download</a>
         <div class="btn-group">
             <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
                 More

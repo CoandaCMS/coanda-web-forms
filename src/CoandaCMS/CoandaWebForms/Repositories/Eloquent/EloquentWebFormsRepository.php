@@ -265,17 +265,18 @@ class EloquentWebFormsRepository implements WebFormsRepositoryInterface {
 		$form->fields()->whereId($field_id)->delete();
 	}
 
-    /**
-     * @param $form
-     * @return array
-     */
-    public function fieldHeadings($form)
+	/**
+	 * @param $form
+	 * @param bool $limit
+	 * @return array
+	 */
+    public function dataHeadings($form, $limit = false)
 	{
 		$headings = [];
 
-		foreach ($form->firstFiveFields() as $field)
+		foreach ($form->dataHeadings($limit) as $field)
 		{
-			$headings[] = $field->label;
+			$headings[$field->identifier] = $field->label;
 		}
 
 		return $headings;
@@ -379,4 +380,13 @@ class EloquentWebFormsRepository implements WebFormsRepositoryInterface {
 		return $this->submission_model->where('post_submit_handler_executed', '=', 0)->take($limit)->get();
 	}
 
+	public function getSubmissions($form_id, $offset, $limit)
+	{
+		return $this
+				->submission_model
+				->where('form_id', '=', $form_id)
+				->skip($offset)
+				->take($limit)
+				->get();
+	}
 }

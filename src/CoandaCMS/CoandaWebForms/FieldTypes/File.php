@@ -86,5 +86,17 @@ class File extends FieldType {
         }
 
         return '';
-    }    
+    }
+
+    public function displayExport($field)
+    {
+        $data = json_decode($field->field_data, true);
+
+        if (is_array($data))
+        {
+            return Coanda::adminUrl('media/download/' . $data['media_id']);
+        }
+
+        return '';
+    }
 }
