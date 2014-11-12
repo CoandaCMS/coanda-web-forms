@@ -29,12 +29,13 @@ class AdminEmailNotification extends PostSubmitHandler {
     public function process($submission, $data)
     {
     	$notification_email = isset($data['notification_email']) ? $data['notification_email'] : false;
+		$include_data = isset($data['include_data']) ? ($data['include_data'] == 'yes') : false;
 
     	if ($notification_email)
     	{
     		$form = $submission->form;
 
-			Mail::send('coanda-web-forms::admin.postsubmithandlers.adminemailnotification.email', ['form' => $form, 'submission' => $submission], function($message) use ($notification_email, $submission, $form)
+			Mail::send('coanda-web-forms::admin.postsubmithandlers.adminemailnotification.email', ['form' => $form, 'submission' => $submission, 'include_data' => $include_data], function($message) use ($notification_email, $submission, $form)
 			{
 	    		$from_name = Config::get('coanda::coanda.site_name');
 	    		$from_email = Config::get('coanda::coanda.site_admin_email');
@@ -43,6 +44,5 @@ class AdminEmailNotification extends PostSubmitHandler {
 			    $message->to($notification_email)->subject('New submission via ' . $form->name);
 			});
     	}
-
     }
 }
