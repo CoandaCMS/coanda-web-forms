@@ -8,7 +8,7 @@ return array(
 	|---------------------------
 	|
 	*/
-	'template' => 'coanda-web-forms::pagetypes.form',
+	'page_type_template' => 'coanda-web-forms::pagetypes.form',
 	
 	/*
 	|---------------------------
