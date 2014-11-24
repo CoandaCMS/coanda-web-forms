@@ -1,79 +1,32 @@
 <?php namespace CoandaCMS\CoandaWebForms\PageTypes;
 
-/**
- * Class Form
- * @package CoandaCMS\CoandaWebForms\PageTypes
- */
 class Form extends \CoandaCMS\Coanda\Pages\PageType {
 
-    /**
-     * @return string
+	/**
+	 * @var string
      */
-    public function identifier()
-	{
-		return 'form';
-	}
+	protected $name = 'Form';
+	/**
+	 * @var string
+     */
+	protected $icon = 'fa-list';
+	/**
+	 * @var bool
+     */
+	protected $allows_sub_pages = false;
+	/**
+	 * @var bool
+     */
+	protected $static_cache = false;
 
-    /**
-     * @return string
+	/**
+	 * @var array
      */
-    public function name()
-	{
-		return 'Form';
-	}
-
-    /**
-     * @return string
-     */
-    public function icon()
-	{
-		return 'fa-list';
-	}
-
-    /**
-     * @return bool
-     */
-    public function allowsSubPages()
-	{
-		return false;
-	}
-
-    /**
-     * @return array
-     */
-    public function attributes()
-	{
-		return [
-				'name' => [
-					'name' => 'Name',
-					'identifier' => 'name',
-					'type' => 'textline',
-					'required' => true,
-					'generates_slug' => true
-				],
-				'content' => [
-					'name' => 'Content',
-					'identifier' => 'content',
-					'type' => 'html',
-					'required' => false
-				],
-				'form' => [
-					'name' => 'Form',
-					'identifier' => 'form',
-					'type' => 'webform',
-					'required' => true
-				],
-			];
-	}
-
-    /**
-     * @param $version
-     * @return mixed
-     */
-    public function generateName($version)
-	{
-		return $version->getAttributeByIdentifier('name')->typeData();
-	}
+	protected $schema = [
+		'name' => 'Name|textline|required|generates_slug',
+		'content' => 'Content|html',
+		'form' => 'Form|webform'
+	];
 
     /**
      * @param $version
@@ -84,12 +37,4 @@ class Form extends \CoandaCMS\Coanda\Pages\PageType {
 	{
 		return \Config::get('coanda-web-forms::config.page_type_template');
 	}
-
-    /**
-     * @return bool
-     */
-    public function canStaticCache()
-    {
-        return false;
-    }
 }
