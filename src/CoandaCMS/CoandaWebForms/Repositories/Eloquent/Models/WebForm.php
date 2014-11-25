@@ -25,7 +25,7 @@ class WebForm extends Eloquent {
         {
             $form->fields()->delete();
 
-            SubmissionField::join('webformsubmissions', 'webformsubmissions.id', '=', 'webformsubmissionfields.submission_id')->where('webformsubmissions.form_id', '=', $form->id)->delete();
+            SubmissionField::join('coanda_webformsubmissions', 'coanda_webformsubmissions.id', '=', 'coanda_webformsubmissionfields.submission_id')->where('coanda_webformsubmissions.form_id', '=', $form->id)->delete();
             $form->submissions()->delete();
 
         });
