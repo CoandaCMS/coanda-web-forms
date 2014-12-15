@@ -99,15 +99,17 @@ class WebFormsModuleProvider implements \CoandaCMS\Coanda\CoandaModuleProvider {
                 App::abort('404');
             }
 
+            $redirect_variable_string = http_build_query(Input::get('redirect_variables', []));
+
             try
             {
                 Coanda::webforms()->storeSubmission(Input::all(), $page->id);
 
-                return Redirect::to(url($page->slug))->with('submission_stored', true);
+                return Redirect::to(url($page->slug . ($redirect_variable_string !== '' ? '?' . $redirect_variable_string : '')))->with('submission_stored', true);
             }
             catch (ValidationException $exception)
             {
-                return Redirect::to(url($page->slug))->with('invalid_fields', $exception->getInvalidFields())->withInput();
+                return Redirect::to(url($page->slug) . ($redirect_variable_string !== '' ? '?' . $redirect_variable_string : ''))->with('invalid_fields', $exception->getInvalidFields())->withInput();
             }
 
         }]);
