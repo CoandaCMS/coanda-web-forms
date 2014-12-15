@@ -15,6 +15,30 @@ abstract class FieldType {
     abstract public function identifier();
 
     /**
+     * @return string
+     */
+    public function editTemplate()
+    {
+        return 'coanda-web-forms::admin.fieldtypes.edit.' . $this->identifier();
+    }
+
+    /**
+     * @return string
+     */
+    public function adminViewTemplate()
+    {
+        return 'coanda-web-forms::admin.fieldtypes.view.' . $this->identifier();
+    }
+
+    /**
+     * @return string
+     */
+    public function viewTemplate()
+    {
+        return 'coanda-web-forms::attributes.fieldtypes.' . $this->identifier();
+    }
+
+    /**
      * @param $field
      * @return mixed
      */

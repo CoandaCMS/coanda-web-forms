@@ -89,7 +89,7 @@
 												@endif
 											</div>
 
-											@include('coanda-web-forms::admin.fieldtypes.edit.' . $field->type, [ 'field' => $field ])
+											@include($field->type()->editTemplate(), [ 'field' => $field ])
 										</div>
 									</div>
 								</div>

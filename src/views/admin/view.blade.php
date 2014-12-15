@@ -86,7 +86,7 @@
 						@foreach ($form->fields as $field)
 
 							<div class="col-md-{{ $field->columns == 0 ? 12 : $field->columns }}">
-								@include('coanda-web-forms::admin.fieldtypes.view.' . $field->type, [ 'field' => $field ])
+								@include($field->type()->adminViewTemplate(), [ 'field' => $field ])
 							</div>
 
 							@set('columncounter', $columncounter + ($field->columns == 0 ? 12 : $field->columns))

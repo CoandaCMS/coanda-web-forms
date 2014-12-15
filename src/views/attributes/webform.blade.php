@@ -21,7 +21,7 @@
 				@set('columncounter', $columncounter + ($field->columns == 0 ? 12 : $field->columns))
 
 				<div class="col-md-{{ $field->columns == 0 ? 12 : $field->columns }}">
-					@include('coanda-web-forms::attributes.fieldtypes.' . $field->type, [ 'field' => $field ])
+					@include($field->type()->viewTemplate(), [ 'field' => $field ])
 				</div>
 
 				@if ($columncounter >= 12 && $field_count < $form->fields->count())
