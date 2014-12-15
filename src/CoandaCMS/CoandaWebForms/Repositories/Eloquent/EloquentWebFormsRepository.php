@@ -180,6 +180,10 @@ class EloquentWebFormsRepository implements WebFormsRepositoryInterface {
 		{
 			$form->post_submit_handler_data = json_encode($post_submit_handlers);
 		}
+		else
+		{
+			$form->post_submit_handler_data = '';
+		}
 
 		$form->save();
 	}
