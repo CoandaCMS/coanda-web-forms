@@ -13,7 +13,7 @@ class Form extends \CoandaCMS\Coanda\Pages\PageType {
 	/**
 	 * @var bool
      */
-	protected $allows_sub_pages = false;
+	protected $allow_sub_pages = false;
 	/**
 	 * @var bool
      */
