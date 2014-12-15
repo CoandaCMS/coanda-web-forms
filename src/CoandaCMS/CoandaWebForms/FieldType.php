@@ -73,7 +73,7 @@ abstract class FieldType {
      * @param $field
      * @return mixed
      */
-    public function displayLine($field) // How the field will be displayed on the screen...
+    public function displayLine($field)
     {
         return $field->field_data;
     }
@@ -86,15 +86,4 @@ abstract class FieldType {
     {
         return $field->field_data;
     }
-
-    /**
-     * @param $field
-     * @return mixed
-     */
-    public function downloadDisplay($field) // How the field will be displayed in a download...
-    {
-        return $field->field_data;
-    }
-
-
 }
