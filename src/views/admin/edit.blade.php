@@ -142,7 +142,6 @@
 				@endif
 
 				{{ Form::button('OK', ['name' => 'ok', 'value' => 'true', 'type' => 'submit', 'class' => 'btn btn-primary']) }}
-				{{ Form::button('Cancel', ['name' => 'cancel', 'value' => 'true', 'type' => 'submit', 'class' => 'btn btn-default']) }}
 
 			{{ Form::close() }}
 		</div>

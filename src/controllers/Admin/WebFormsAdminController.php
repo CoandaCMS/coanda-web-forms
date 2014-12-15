@@ -126,6 +126,11 @@ class WebFormsAdminController extends BaseController {
 	{
 		Coanda::checkAccess('webforms', 'edit');
 
+		if (Input::has('cancel') && Input::get('cancel') == 'true')
+		{
+			return Redirect::to(Coanda::adminUrl('forms'));
+		}
+
 		try
 		{
 			$form = $this->webFormsRepository->createForm(Input::all());
