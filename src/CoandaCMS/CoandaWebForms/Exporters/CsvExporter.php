@@ -16,6 +16,16 @@ class CsvExporter {
      * @var
      */
     private $file_name;
+
+    /**
+     * @var
+     */
+    private $date_range_from;
+    /**
+     * @var
+     */
+    private $date_range_to;
+
     /**
      * @var \Illuminate\Filesystem\Filesystem
      */
@@ -42,24 +52,40 @@ class CsvExporter {
     /**
      * @param $form
      * @param bool $file_name
+     * @param array $date_range
      */
-    private function initialiseExport($form, $file_name = false)
+    private function initialiseExport($form, $file_name = false, $date_range = [])
     {
         $this->form = $form;
         $this->file_name = $file_name;
         $this->csv = new CsvWriter(new \SplTempFileObject);
+
+        $this->handleDateRange($date_range);
+    }
+
+    /**
+     * @param $date_range
+     */
+    private function handleDateRange($date_range)
+    {
+        $this->date_range_from = isset($date_range['from']) ? $date_range['from'] : false;
+        $this->date_range_to = isset($date_range['to']) ? $date_range['to'] : false;
     }
 
     /**
      * @param $form
      * @param bool $file_name
+     * @param array $date_range
+     * @return string
      */
-    public function exportToFile($form, $file_name = false)
+    public function exportToFile($form, $file_name = false, $date_range = [])
     {
-        $this->initialiseExport($form, $file_name);
+        $this->initialiseExport($form, $file_name, $date_range);
         $this->buildCsv();
 
         $this->filesystem->put($this->generateFileName(), $this->csv->__toString());
+
+        return $this->generateFileName();
     }
 
     /**
@@ -128,7 +154,7 @@ class CsvExporter {
 
         while(true)
         {
-            $submissions = $this->formsRepository->getSubmissions($this->form->id, $offset, $limit);
+            $submissions = $this->formsRepository->getSubmissions($this->form->id, $offset, $limit, $this->date_range_from, $this->date_range_to);
 
             if ($submissions->count() == 0)
             {

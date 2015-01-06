@@ -384,13 +384,32 @@ class EloquentWebFormsRepository implements WebFormsRepositoryInterface {
 		return $this->submission_model->where('post_submit_handler_executed', '=', 0)->take($limit)->get();
 	}
 
-	public function getSubmissions($form_id, $offset, $limit)
+	/**
+	 * @param $form_id
+	 * @param $offset
+	 * @param $limit
+	 * @param bool $from
+	 * @param bool $to
+	 * @return mixed
+     */
+	public function getSubmissions($form_id, $offset, $limit, $from = false, $to = false)
 	{
-		return $this
-				->submission_model
-				->where('form_id', '=', $form_id)
-				->skip($offset)
-				->take($limit)
-				->get();
+		$query = $this
+			->submission_model
+			->where('form_id', '=', $form_id)
+			->skip($offset)
+			->take($limit);
+
+		if ($from)
+		{
+			$query->where('created_at' , '>', $from);
+		}
+
+		if ($to)
+		{
+			$query->where('created_at' , '<', $to);
+		}
+
+		return $query->get();
 	}
 }
