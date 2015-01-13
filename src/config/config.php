@@ -28,6 +28,7 @@ return array(
         'CoandaCMS\CoandaWebForms\FieldTypes\Time',
 		'CoandaCMS\CoandaWebForms\FieldTypes\Number',
 		'CoandaCMS\CoandaWebForms\FieldTypes\File',
+		'CoandaCMS\CoandaWebForms\FieldTypes\Boolean',
 
 		'CoandaCMS\CoandaWebForms\FieldTypes\ContentHeader',
 		'CoandaCMS\CoandaWebForms\FieldTypes\ContentText',
