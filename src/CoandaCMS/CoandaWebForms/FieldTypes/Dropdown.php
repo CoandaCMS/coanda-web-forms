@@ -36,6 +36,11 @@ class Dropdown extends FieldType {
 
         $valid_options = [];
 
+        if (!isset($data['options']))
+        {
+            $data['options'] = [];
+        }
+
         foreach ($data['options'] as $option)
         {
             if ($option != '')
