@@ -27,8 +27,6 @@ class Boolean extends FieldType {
      */
     public function setTypeData($field, $data)
     {
-        dd($data);
-
         if (!is_array($data))
         {
             $data = [
@@ -36,7 +34,7 @@ class Boolean extends FieldType {
             ];
         }
 
-        if (is_string($data['default_ticked']) && $data['default_ticked'] == 'true')
+        if (isset($data['default_ticked']) && is_string($data['default_ticked']) && $data['default_ticked'] == 'true')
         {
             $data['default_ticked'] = true;
         }

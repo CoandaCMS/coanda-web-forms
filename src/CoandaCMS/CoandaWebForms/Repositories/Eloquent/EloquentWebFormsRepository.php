@@ -140,12 +140,7 @@ class EloquentWebFormsRepository implements WebFormsRepositoryInterface {
 			}
 
 			$field->required = isset($data['field_' . $field->id . '_required']) && $data['field_' . $field->id . '_required'] == 'true';
-
-			if (isset($data['field_' . $field->id . '_custom']))
-			{
-				$field->setTypeData($data['field_' . $field->id . '_custom']);
-			}
-
+			$field->setTypeData(isset($data['field_' . $field->id . '_custom']) ? $data['field_' . $field->id . '_custom'] : []);
 			$field->save();
 
 			if ($field->label == '')

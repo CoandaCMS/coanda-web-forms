@@ -34,6 +34,11 @@ class Radiobuttons extends FieldType {
             ];
         }
 
+        if (!isset($data['options']))
+        {
+            $data['options'] = [];
+        }
+
         $valid_options = [];
 
         foreach ($data['options'] as $option)
