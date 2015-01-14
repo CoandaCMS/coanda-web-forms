@@ -3,6 +3,7 @@
 <div class="form-group">
     <label>{{ $field->label }}</label>
     <select class="form-control">
+        <option></option>
         @foreach ($country_list as $country)
             <option>{{ $country }}</option>
         @endforeach

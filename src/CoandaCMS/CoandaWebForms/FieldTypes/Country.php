@@ -1,7 +1,6 @@
 <?php namespace CoandaCMS\CoandaWebForms\FieldTypes;
 
 use CoandaCMS\CoandaWebForms\FieldType;
-use CoandaCMS\CoandaWebForms\Exceptions\FieldTypeRequiredException;
 
 class Country extends FieldType {
 
