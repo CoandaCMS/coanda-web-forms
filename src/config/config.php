@@ -30,6 +30,7 @@ return array(
 		'CoandaCMS\CoandaWebForms\FieldTypes\File',
 		'CoandaCMS\CoandaWebForms\FieldTypes\Boolean',
         'CoandaCMS\CoandaWebForms\FieldTypes\Country',
+        'CoandaCMS\CoandaWebForms\FieldTypes\NumberRange',
 
 		'CoandaCMS\CoandaWebForms\FieldTypes\ContentHeader',
 		'CoandaCMS\CoandaWebForms\FieldTypes\ContentText',
