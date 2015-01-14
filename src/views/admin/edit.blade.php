@@ -89,7 +89,7 @@
 												@endif
 											</div>
 
-											@include($field->type()->editTemplate(), [ 'field' => $field ])
+											@include($field->type()->editTemplate(), [ 'field' => $field, 'has_error' => isset($invalid_fields['field_' . $field->id]['label']) ])
 										</div>
 									</div>
 								</div>
