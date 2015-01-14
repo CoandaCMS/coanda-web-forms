@@ -1,5 +1,6 @@
 <?php namespace CoandaCMS\CoandaWebForms\Repositories\Eloquent;
 
+use CoandaCMS\CoandaWebForms\Exceptions\FieldTypeConfigurationException;
 use Input, Coanda;
 
 use CoandaCMS\CoandaWebForms\Repositories\Eloquent\Models\WebForm as WebFormModel;
@@ -140,7 +141,16 @@ class EloquentWebFormsRepository implements WebFormsRepositoryInterface {
 			}
 
 			$field->required = isset($data['field_' . $field->id . '_required']) && $data['field_' . $field->id . '_required'] == 'true';
-			$field->setTypeData(isset($data['field_' . $field->id . '_custom']) ? $data['field_' . $field->id . '_custom'] : []);
+
+            try
+            {
+                $field->setTypeData(isset($data['field_' . $field->id . '_custom']) ? $data['field_' . $field->id . '_custom'] : []);
+            }
+            catch (FieldTypeConfigurationException $exception)
+            {
+                $invalid_fields['field_' . $field->id]['label'] = $exception->getMessage();
+            }
+
 			$field->save();
 
 			if ($field->label == '')
