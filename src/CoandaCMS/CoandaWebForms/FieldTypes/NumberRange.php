@@ -25,6 +25,7 @@ class NumberRange extends FieldType {
     /**
      * @param $field
      * @param $data
+     * @throws FieldTypeConfigurationException
      */
     public function setTypeData($field, $data)
     {
