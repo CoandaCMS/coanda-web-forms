@@ -31,6 +31,7 @@ return array(
 		'CoandaCMS\CoandaWebForms\FieldTypes\Boolean',
         'CoandaCMS\CoandaWebForms\FieldTypes\Country',
         'CoandaCMS\CoandaWebForms\FieldTypes\NumberRange',
+        'CoandaCMS\CoandaWebForms\FieldTypes\Matrix',
 
 		'CoandaCMS\CoandaWebForms\FieldTypes\ContentHeader',
 		'CoandaCMS\CoandaWebForms\FieldTypes\ContentText',
