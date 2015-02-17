@@ -12,3 +12,7 @@
         </div>
     </div>
 </div>
+<div class="checkbox">
+    <input type="checkbox" id="field_{{ $field->id }}_render_as_radios" name="field_{{ $field->id }}_custom[render_as_radios]" value="true" {{ isset($field->typeData()['render_as_radios']) && $field->typeData()['render_as_radios'] ? ' checked="checked"' : '' }}">
+    <label for="field_{{ $field->id }}_render_as_radios">Show as radio buttons (e.g. Rate this from 1-10)</label>
+</div>
