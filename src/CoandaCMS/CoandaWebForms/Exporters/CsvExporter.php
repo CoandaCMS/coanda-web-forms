@@ -98,7 +98,7 @@ class CsvExporter {
         $this->buildCsv();
 
         header('Content-Type: text/csv; charset=UTF-8');
-        header('Content-Disposition: attachment; filename="' . $this->file_name . '"');
+        header('Content-Disposition: attachment; filename="' . $this->file_name . '.csv"');
 
         $this->csv->output();
         exit;
