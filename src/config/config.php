@@ -32,6 +32,7 @@ return array(
         'CoandaCMS\CoandaWebForms\FieldTypes\Country',
         'CoandaCMS\CoandaWebForms\FieldTypes\NumberRange',
         'CoandaCMS\CoandaWebForms\FieldTypes\Matrix',
+        'CoandaCMS\CoandaWebForms\FieldTypes\UKPostcode',
 
 		'CoandaCMS\CoandaWebForms\FieldTypes\ContentHeader',
 		'CoandaCMS\CoandaWebForms\FieldTypes\ContentText',
