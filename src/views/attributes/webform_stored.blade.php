@@ -1,3 +1,9 @@
+@set('form', Coanda::webforms()->getForm($data))
+
 <div class="alert alert-success">
-	<strong>Thanks!</strong> your submission has been stored.
+    @if ($form->submitted_message)
+        {{ $form->submitted_message }}
+    @else
+	    <strong>Thanks!</strong> your submission has been stored.
+    @endif
 </div>

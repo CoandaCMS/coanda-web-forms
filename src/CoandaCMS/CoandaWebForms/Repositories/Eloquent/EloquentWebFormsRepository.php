@@ -126,6 +126,7 @@ class EloquentWebFormsRepository implements WebFormsRepositoryInterface {
 		else
 		{
 			$form->name = $data['name'];
+            $form->submitted_message = $data['submitted_message'];
 			$form->save();
 		}
 

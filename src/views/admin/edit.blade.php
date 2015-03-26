@@ -119,6 +119,11 @@
 					</div>
 				</div>
 
+                <div class="form-group">
+                    <label for="submitted_message" class="control-label">Submitted text e.g. Thanks for your submission.</label>
+                    <textarea id="submitted_message" name="submitted_message" class="form-control" rows="5">{{ $form->submitted_message }}</textarea>
+                </div>
+
 				@if (count($available_post_submit_handlers) > 0)
 					<h2>Post submit handlers</h2>
 

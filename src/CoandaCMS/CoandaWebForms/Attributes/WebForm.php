@@ -73,7 +73,7 @@ class WebForm extends AttributeType {
 
         if (Session::has('submission_stored'))
         {
-            return View::make('coanda-web-forms::attributes.webform_stored');
+            return View::make('coanda-web-forms::attributes.webform_stored', ['data' => $data]);
         }
         else
         {
