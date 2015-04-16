@@ -10,7 +10,7 @@ class Textbox extends FieldType {
      */
     public function name()
     {
-        return 'Text box';
+        return 'Text (Multiple Line)';
     }
 
     /**

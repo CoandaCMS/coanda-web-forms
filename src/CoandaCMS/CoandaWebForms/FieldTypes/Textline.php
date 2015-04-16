@@ -10,7 +10,7 @@ class Textline extends FieldType {
      */
     public function name()
     {
-        return 'Text line';
+        return 'Text (Single Line)';
     }
 
     /**
