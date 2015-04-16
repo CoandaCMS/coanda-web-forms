@@ -1,5 +1,5 @@
 <div class="form-group">
-	<label>{{ $field->label }}</label>
+	<label>{{ $field->label }} @if ($field->required) * @endif</label>
 
 	@foreach ((isset($field->typeData()['options']) ? $field->typeData()['options'] : []) as $option_index => $option)
 		<div class="checkbox">

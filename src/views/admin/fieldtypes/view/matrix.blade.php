@@ -1,5 +1,5 @@
 <div class="form-group">
-    <label>{{ $field->label }}</label>
+    <label>{{ $field->label }} @if ($field->required) * @endif</label>
 
     <table class="table table-striped">
         <thead>

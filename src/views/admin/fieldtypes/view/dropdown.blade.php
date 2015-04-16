@@ -1,5 +1,5 @@
 <div class="form-group">
-	<label>{{ $field->label }}</label>
+	<label>{{ $field->label }} @if ($field->required) * @endif</label>
 	<select class="form-control">
         @if (isset($field->typeData()['include_blank_option']) && $field->typeData()['include_blank_option'])
             <option></option>
