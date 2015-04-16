@@ -55,7 +55,7 @@
 								</table>
 							@endif
 
-							<p style="font-family: 'Helvetica Neue', 'Helvetica', Helvetica, Arial, sans-serif; font-size: 14px; line-height: 1.6; font-weight: normal; margin: 10px 0 10px 0; padding: 0;">Thanks, have a lovely day.</p>
+							<p style="font-family: 'Helvetica Neue', 'Helvetica', Helvetica, Arial, sans-serif; font-size: 14px; line-height: 1.6; font-weight: normal; margin: 10px 0 10px 0; padding: 0;">Thanks.</p>
 						</td>
 					</tr>
 				</table>
