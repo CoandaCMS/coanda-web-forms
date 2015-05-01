@@ -23,7 +23,7 @@
 				<div class="col-xs-4 col-sm-5">
 					<select class="form-control" name="date_of_birth[year]">
 						<option value="">Year</option>
-						@foreach(range(1914, date('Y', time()) as $year)
+						@foreach(range(1914, date('Y', time())) as $year)
 							<option value="{{ $year }}">{{ $year }}</option>
 						@endforeach
 					</select>
