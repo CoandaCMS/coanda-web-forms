@@ -35,6 +35,17 @@
 			@endforeach
 		</div>
 
+		@if ($form->enable_recaptcha)
+			<div class="form-group @if (isset($invalid_fields['recaptcha'])) has-error @endif">		
+				<script src='https://www.google.com/recaptcha/api.js'></script>
+				<p><div class="g-recaptcha" data-sitekey="{{ Config::get('coanda-web-forms::recaptcha_site_key') }}"></div></p>
+
+				@if (isset($invalid_fields['recaptcha']))
+					<span class="help-block">{{ $invalid_fields['recaptcha'] }}</span>
+				@endif
+			</div>
+		@endif
+
 		<button class="btn btn-primary" name="submit_form">Submit</button>
 
 	{{ Form::close() }}

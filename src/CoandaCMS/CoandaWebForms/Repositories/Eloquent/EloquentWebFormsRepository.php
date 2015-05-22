@@ -127,6 +127,7 @@ class EloquentWebFormsRepository implements WebFormsRepositoryInterface {
 		{
 			$form->name = $data['name'];
             $form->submitted_message = $data['submitted_message'];
+            $form->enable_recaptcha = (isset($data['enable_recaptcha']) && $data['enable_recaptcha'] == 'yes') ? true : false;
 			$form->save();
 		}
 
@@ -293,6 +294,61 @@ class EloquentWebFormsRepository implements WebFormsRepositoryInterface {
 	}
 
     /**
+     * @return bool|string
+     */
+    private function getUserIP()
+	{
+		if (getenv('HTTP_CLIENT_IP'))
+		{
+			$ip = getenv('HTTP_CLIENT_IP');
+		}
+		else if (getenv('HTTP_X_FORWARDED_FOR'))
+		{
+			$ip = getenv('HTTP_X_FORWARDED_FOR');
+		}
+		else if (getenv('REMOTE_ADDR'))
+		{
+			$ip = getenv('REMOTE_ADDR');
+		}
+		else
+		{
+			$ip = false;
+		}
+
+		return $ip;
+	}
+
+    /**
+     * @param $response
+     * @return bool
+     */
+    private function verifyRecaptcha($response)
+	{
+		$peer_key = version_compare(PHP_VERSION, '5.6.0', '<') ? 'CN_name' : 'peer_name';
+        
+        $options = array(
+            'http' => array(
+                'header' => "Content-type: application/x-www-form-urlencoded\r\n",
+                'method' => 'POST',
+                'content' => http_build_query([
+                	'secret' => \Config::get('coanda-web-forms::recaptcha_secret_key'),
+                	'response' => $response,
+                	'remoteip' => $this->getUserIP()
+                ]),
+                'verify_peer' => true,
+                $peer_key => 'www.google.com',
+            ),
+        );
+        
+        $context = stream_context_create($options);
+        $result = file_get_contents('https://www.google.com/recaptcha/api/siteverify', false, $context);
+
+		$process_result = json_decode($result, true);
+
+		return isset($process_result['success']) ? $process_result['success'] : false;
+	}
+
+    /**
      * @param $data
      * @param $page_id
      * @throws ValidationException
@@ -310,6 +366,14 @@ class EloquentWebFormsRepository implements WebFormsRepositoryInterface {
 
 			$invalid_fields = [];
 			$field_values = [];
+
+			if ($form->enable_recaptcha)
+			{
+				if (!$this->verifyRecaptcha($data['g-recaptcha-response']))
+				{
+					$invalid_fields['recaptcha'] = 'reCAPTCHA could not be verified';
+				}
+			}
 
 			foreach ($form->fields as $field)
 			{

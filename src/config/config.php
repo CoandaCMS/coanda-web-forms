@@ -44,6 +44,9 @@ return array(
 		'CoandaCMS\CoandaWebForms\PostSubmitHandlers\AdminEmailNotification',
 	],
 
+    'recaptcha_site_key' => '',
+    'recaptcha_secret_key' => '',
+
     'country_list' => [
         "United Kingdom",
         "United States",

@@ -124,6 +124,15 @@
                     <textarea id="submitted_message" name="submitted_message" class="form-control" rows="5">{{ $form->submitted_message }}</textarea>
                 </div>
 
+                <div class="form-group">
+                	<div class="checkbox">
+	                    <label>
+	                    	Enable Recaptcha
+	                    	<input type="checkbox" value="yes" id="enable_recaptcha" name="enable_recaptcha" @if ($form->enable_recaptcha) checked="checked" @endif>
+	                    </label>
+                    </label>
+                </div>
+
 				@if (count($available_post_submit_handlers) > 0)
 					<h2>Post submit handlers</h2>
 
