@@ -72,6 +72,11 @@ class WebFormsAdminController extends BaseController {
 		try
 		{
 			$form = $this->webFormsRepository->getForm($form_id);
+
+            if($form->download() && $form->download()->available()) {
+                return \Response::download($form->download()->filename);
+            }
+
 			$file_name = $form->name . '-Submissions-' . date('d-m-Y-H-i-s', time());
 
 			$this->exporter->exportToBrowser($form, $file_name);
@@ -287,6 +292,57 @@ class WebFormsAdminController extends BaseController {
         catch (WebFormNotFoundException $exception)
         {
             App::abort('404');
+        }
+    }
+
+
+    /**
+     * @param $form_id
+     */
+    public function getQueue($form_id)
+    {
+        Coanda::checkAccess('webforms', 'view');
+
+        try
+        {
+            $form = $this->webFormsRepository->getForm($form_id);
+
+            if ($form) {
+                $this->webFormsRepository->createDownload( ['webform_id' => $form_id] )->queue();
+            }
+
+            return Redirect::to(Coanda::adminUrl('forms/view/' . $form_id));
+        }
+        catch (WebFormNotFoundException $exception)
+        {
+            App::abort('404');
+        }
+    }
+
+    /**
+     * Get Progress as Json 
+     * 
+     * @param int $form_id 
+     * 
+     * @return           
+     */
+    public function getProgress($form_id)
+    {
+        Coanda::checkAccess('webforms', 'view');
+
+        try
+        {
+            $form = $this->webFormsRepository->getForm($form_id);
+
+            return $form->download();
+        }
+        catch (WebFormNotFoundException $exception)
+        {
+            $returnData = array(
+                'status' => 'error',
+                'message' => 'Web Form or Download not found!'
+            );
+            return \Response::json($returnData, 404);
         }
     }
 

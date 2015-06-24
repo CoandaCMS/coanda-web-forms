@@ -22,8 +22,46 @@
 
 <div class="row">
 	<div class="page-options col-md-12">
-		<a href="{{ Coanda::adminUrl('forms/edit/' . $form->id) }}" class="btn btn-primary">Edit</a>
-		<a href="{{ Coanda::adminUrl('forms/download/' . $form->id) }}" class="btn btn-default">Download</a>
+		<a href="{{ Coanda::adminUrl('forms/edit/' . $form->id) }}" class="btn btn-primary">
+			Edit
+		</a>
+
+		@if($form->submissions->count() < 1000 || \Config::get('queue.default') == 'sync')
+		<a href	="{{ Coanda::adminUrl('forms/download/' . $form->id) }}" class="btn btn-success">
+			Download
+		</a>
+		@else
+			@set('form_download', $form->download())
+			
+			@if($form_download && $form_download->available())
+				<a href="{{ Coanda::adminUrl('forms/download/' . $form->id) }}" class="btn btn-success">
+					Download 
+						<span class="badge">Created {{ $form_download->age() }}</span>
+				</a>
+			@endif
+
+			@if(!$form_download)
+				<a href="{{ Coanda::adminUrl('forms/queue/' . $form->id) }}" class="btn btn-default">
+					Request Download
+				</a>
+			@elseif( $form_download->status == 0 )
+				<a href="#" class="btn btn-info requested" id="web-form-ajax-btn" data-id="{{ $form->id }}">
+					<i id="fmn-search" class="fa fa-spinner fa-spin"></i>
+					Download Requested
+				</a>
+			@elseif( $form_download->status == 1 )
+				<a href="#" class="btn btn-info preparing" id="web-form-ajax-btn" data-id="{{ $form->id }}">
+					<i id="fmn-search" class="fa fa-spinner fa-spin"></i>
+					Preparing Download
+						<span class="badge status-percent">{{ $form_download->status_percentage }}</span>
+				</a>
+			@else
+			<a href="{{ Coanda::adminUrl('forms/queue/' . $form->id) }}" class="btn btn-default">
+				Re-request Download
+			</a>
+			@endif
+		@endif
+
         <div class="btn-group">
             <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
                 More
@@ -107,5 +145,65 @@
 		</div>
 	</div>
 </div>
+
+@section('custom-js')
+<script type="text/javascript">
+jQuery(document).ready(function($) {
+
+    if ($('#web-form-ajax-btn').length !== 0) {
+
+    	downloadDone = 0;
+    	$ajaxBtn = $('#web-form-ajax-btn');
+
+    	function ajaxRequest() {
+    		(function request() {
+    			if(!downloadDone) {
+					$.ajax({
+						url: '/admin/forms/progress/' + $ajaxBtn.attr('data-id'), 	
+						success: function(data) {
+
+							if (data.filename) {
+								downloadReady();
+							} else {
+								updateDownloadButton(data);
+							}
+
+						},
+						complete: function(data) {
+
+							if (!data.filename) {
+								setTimeout(request, 2500);
+							} 
+
+						}
+					});
+				}
+			})();
+    	}
+
+    	function updateDownloadButton(data) {
+    		var fullContent = '<i id="fmn-search" class="fa fa-spinner fa-spin"></i> Preparing Download <span class="badge status-percent"></span>';
+    		if ($ajaxBtn.hasClass('requested')) {
+    			$ajaxBtn.html(fullContent);
+    		} 
+
+    		$('.status-percent').html(data.status_percentage);
+    	}
+
+    	function downloadReady() {
+    		$ajaxBtn.attr('href', '/admin/forms/download/' + $ajaxBtn.attr('data-id')).html('Download Ready!');
+    		$ajaxBtn.addClass('btn-success').removeClass('btn-info');
+
+    		downloadDone = 1;
+    	}
+
+    	ajaxRequest();
+
+    }
+    
+});
+
+</script>
+@append
 
 @stop
