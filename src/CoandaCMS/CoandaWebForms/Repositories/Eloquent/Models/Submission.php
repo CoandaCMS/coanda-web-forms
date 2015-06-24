@@ -54,22 +54,6 @@ class Submission extends Eloquent {
      */
     public function fieldsForHeadings($headings)
     {
-        $fields = [];
-
-        foreach ($headings as $heading)
-        {
-            $field = $this->fields()->whereLabel($heading)->first();
-
-            if ($field)
-            {
-                $fields[] = $field;
-            }
-            else
-            {
-                $fields[] = false;
-            }
-        }
-
-        return $fields;
+        return $this->fields()->whereIn('label', $headings)->get();
     }
 }
