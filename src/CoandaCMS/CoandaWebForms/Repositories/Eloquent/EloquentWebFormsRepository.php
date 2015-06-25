@@ -5,6 +5,7 @@ use Input, Coanda;
 
 use CoandaCMS\CoandaWebForms\Repositories\Eloquent\Models\WebForm as WebFormModel;
 use CoandaCMS\CoandaWebForms\Repositories\Eloquent\Models\WebFormField as WebFormFieldModel;
+use CoandaCMS\CoandaWebForms\Repositories\Eloquent\Models\WebFormDownload as WebFormDownloadModel;
 
 use CoandaCMS\CoandaWebForms\Repositories\Eloquent\Models\Submission as SubmissionModel;
 use CoandaCMS\CoandaWebForms\Repositories\Eloquent\Models\SubmissionField as SubmissionFieldModel;
@@ -22,15 +23,22 @@ class EloquentWebFormsRepository implements WebFormsRepositoryInterface {
      * @var WebFormModel
      */
     private $web_form_model;
+
     /**
      * @var WebFormFieldModel
      */
     private $web_form_field_model;
 
     /**
+     * @var WebFormModel
+     */
+    private $web_form_download_model;
+
+    /**
      * @var SubmissionModel
      */
     private $submission_model;
+
     /**
      * @var SubmissionFieldModel
      */
@@ -42,10 +50,11 @@ class EloquentWebFormsRepository implements WebFormsRepositoryInterface {
      * @param SubmissionModel $submission_model
      * @param SubmissionFieldModel $submission_field_model
      */
-    public function __construct(WebFormModel $web_form_model, WebFormFieldModel $web_form_field_model, SubmissionModel $submission_model, SubmissionFieldModel $submission_field_model)
+    public function __construct(WebFormModel $web_form_model, WebFormFieldModel $web_form_field_model, WebFormDownloadModel $web_form_download_model, SubmissionModel $submission_model, SubmissionFieldModel $submission_field_model)
 	{
 		$this->web_form_model = $web_form_model;
 		$this->web_form_field_model = $web_form_field_model;
+        $this->web_form_download_model = $web_form_download_model;
 
 		$this->submission_model = $submission_model;
 		$this->submission_field_model = $submission_field_model;
@@ -462,24 +471,72 @@ class EloquentWebFormsRepository implements WebFormsRepositoryInterface {
 	 * @param bool $to
 	 * @return mixed
      */
-	public function getSubmissions($form_id, $offset, $limit, $from = false, $to = false)
+	public function getSubmissions($form_id, $offset = false, $limit = false, $from = false, $to = false, $count = false)
 	{
 		$query = $this
 			->submission_model
-			->where('form_id', '=', $form_id)
-			->skip($offset)
-			->take($limit);
+			->where('form_id', '=', $form_id);
 
-		if ($from)
-		{
+        if ($offset) {
+            $query->skip($offset);
+        }
+		
+        if ($limit) {
+			$query->take($limit);
+        }
+
+		if ($from) {
 			$query->where('created_at' , '>', $from);
 		}
 
-		if ($to)
-		{
+		if ($to) {
 			$query->where('created_at' , '<', $to);
 		}
 
+        if ($count) {
+            return $query->count();
+        }
+
 		return $query->get();
 	}
+
+    /**
+     * @param  array $data
+     * @return WebFormDownload       
+     */
+    public function createDownload($data)
+    {
+        return $this->web_form_download_model->create($data);
+    }
+
+    /**
+     * @param  int $download_id
+     * @return WebFormDownload       
+     */
+    public function getDownload($download_id)
+    {
+        return $this->web_form_download_model->find($download_id);
+    }
+
+    /**
+     * Update Download Percentage
+     * 
+     * @param  int $download_id 
+     * @param  int $percentage  
+     * 
+     * @return boolean  Success or failure
+     */
+    public function updateDownloadPercentage($download_id, $percentage)
+    {
+        $webFormDownload =  $this->web_form_download_model->find($download_id);
+
+        if ($webFormDownload) {
+            $webFormDownload->status_percentage = $percentage;
+            $webFormDownload->save();
+
+            return true;
+        }
+
+        return false;
+    }
 }

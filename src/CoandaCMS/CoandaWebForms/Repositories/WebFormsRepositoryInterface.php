@@ -63,4 +63,14 @@ interface WebFormsRepositoryInterface {
      * @return mixed
      */
     public function getSubmissions($form_id, $offset, $limit, $from, $to);
+
+    /**
+     * @param array $data
+     */
+    public function createDownload($data);
+
+    /**
+     * @param int $download_id
+     */
+    public function getDownload($download_id);
 }

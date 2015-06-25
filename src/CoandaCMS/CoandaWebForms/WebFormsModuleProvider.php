@@ -47,6 +47,10 @@ class WebFormsModuleProvider implements \CoandaCMS\Coanda\CoandaModuleProvider {
                 'name' => 'Download',
                 'options' => []
             ],
+            'queue' => [
+                'name' => 'Queue',
+                'options' => []
+            ],
         ];
 
 		$coanda->addModulePermissions('webforms', 'Web forms', $permissions);

@@ -78,10 +78,10 @@ class CsvExporter {
      * @param array $date_range
      * @return string
      */
-    public function exportToFile($form, $file_name = false, $date_range = [])
+    public function exportToFile($form, $file_name = false, $date_range = [], $update_download_id = false)
     {
         $this->initialiseExport($form, $file_name, $date_range);
-        $this->buildCsv();
+        $this->buildCsv($update_download_id);
 
         $this->filesystem->put($this->generateFileName(), $this->csv->__toString());
 
@@ -127,10 +127,10 @@ class CsvExporter {
     /**
      *
      */
-    private function buildCsv()
+    private function buildCsv($update_download_id = false)
     {
         $this->addHeadings();
-        $this->addSubmissions();
+        $this->addSubmissions($update_download_id);
     }
 
     /**
@@ -147,14 +147,33 @@ class CsvExporter {
     /**
      *
      */
-    private function addSubmissions()
+    private function addSubmissions($update_download_id = false)
     {
-        $limit = 100;
+        if ($update_download_id) {
+            $total = $this->formsRepository->getSubmissions($this->form->id, false, false, $this->date_range_from, $this->date_range_to, true);
+
+            $this->formsRepository->updateDownloadPercentage($update_download_id, 0);
+        }
+
         $offset = 0;
+        $limit = 100;
 
         while(true)
         {
-            $submissions = $this->formsRepository->getSubmissions($this->form->id, $offset, $limit, $this->date_range_from, $this->date_range_to);
+            $this->loopSubmissions($offset, $limit);
+
+            if (isset($total)) {
+                $percentage = ( ($offset + $limit) / $total) * 100;
+                $this->formsRepository->updateDownloadPercentage($update_download_id,  $percentage );
+            }
+
+            $offset += $limit;
+        }
+    }
+
+    private function loopSubmissions($offset, $limit)
+    {
+        $submissions = $this->formsRepository->getSubmissions($this->form->id, $offset, $limit, $this->date_range_from, $this->date_range_to, false);
 
             if ($submissions->count() == 0)
             {
@@ -175,8 +194,6 @@ class CsvExporter {
                 $this->addSubmissionRow($row);
             }
 
-            $offset += $limit;
-        }
     }
 
     /**

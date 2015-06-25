@@ -1,6 +1,8 @@
 <?php namespace CoandaCMS\CoandaWebForms\Repositories\Eloquent\Models;
 
-use Eloquent, Coanda;
+use Carbon\Carbon;
+use Coanda;
+use Eloquent;
 
 class WebForm extends Eloquent {
 
@@ -28,6 +30,7 @@ class WebForm extends Eloquent {
             SubmissionField::join('coanda_webformsubmissions', 'coanda_webformsubmissions.id', '=', 'coanda_webformsubmissionfields.submission_id')->where('coanda_webformsubmissions.form_id', '=', $form->id)->delete();
             $form->submissions()->delete();
 
+            $form->downloads()->delete();
         });
     }
 
@@ -45,6 +48,26 @@ class WebForm extends Eloquent {
     public function submissions()
     {
         return $this->hasMany('CoandaCMS\CoandaWebForms\Repositories\Eloquent\Models\Submission', 'form_id')->orderBy('created_at', 'desc');
+    }
+    
+    /**
+     * Returns the downloads collection
+     * 
+     * @return mixed
+     */
+    public function downloads()
+    {
+        return $this->hasMany('CoandaCMS\CoandaWebForms\Repositories\Eloquent\Models\WebFormDownload', 'webform_id')->orderBy('created_at', 'desc');
+    }
+
+    /**
+     * Returns a single download
+     * 
+     * @return mixed
+     */
+    public function download()
+    {
+        return $this->downloads()->first();
     }
 
     /**
