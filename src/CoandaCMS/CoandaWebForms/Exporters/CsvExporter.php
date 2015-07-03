@@ -177,7 +177,7 @@ class CsvExporter {
 
             if ($submissions->count() == 0)
             {
-                break;
+                return;
             }
 
             foreach ($submissions as $submission)
