@@ -160,7 +160,9 @@ class CsvExporter {
 
         while(true)
         {
-            $this->loopSubmissions($offset, $limit);
+            if ($this->loopSubmissions($offset, $limit)) {
+                break;
+            }
 
             if (isset($total)) {
                 $percentage = ( ($offset + $limit) / $total) * 100;
@@ -175,25 +177,28 @@ class CsvExporter {
     {
         $submissions = $this->formsRepository->getSubmissions($this->form->id, $offset, $limit, $this->date_range_from, $this->date_range_to, false);
 
-            if ($submissions->count() == 0)
+        if ($submissions->count() == 0)
+        {
+            return true;
+        }
+
+        foreach ($submissions as $submission)
+        {
+            $row = [];
+
+            foreach ($submission->fields as $field)
             {
-                return;
+                $row[$field->identifier] = $field->display_export;
             }
 
-            foreach ($submissions as $submission)
-            {
-                $row = [];
+            $row['created_at'] = $submission->created_at;
 
-                foreach ($submission->fields as $field)
-                {
-                    $row[$field->identifier] = $field->display_export;
-                }
+            echo $submission->id . '.';
 
-                $row['created_at'] = $submission->created_at;
+            $this->addSubmissionRow($row);
+        }
 
-                $this->addSubmissionRow($row);
-            }
-
+        return false;
     }
 
     /**
