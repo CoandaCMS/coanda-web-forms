@@ -193,8 +193,6 @@ class CsvExporter {
 
             $row['created_at'] = $submission->created_at;
 
-            echo $submission->id . '.';
-
             $this->addSubmissionRow($row);
         }
 
