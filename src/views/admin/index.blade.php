@@ -48,7 +48,8 @@
 							@foreach ($forms as $form)
 							<tr>
 								<td><a href="{{ Coanda::adminUrl('forms/view/' . $form->id) }}">{{ $form->name }}</a></td>
-								<td>{{ $form->submissions->count() }} @if ($form->submissions->count() == 1) submission @else submissions @endif</td>
+								@set('submission_count', $form->submissions()->count())
+								<td>{{ $submission_count }} @if ($submission_count == 1) submission @else submissions @endif</td>
 								<td class="tight"><a href="{{ Coanda::adminUrl('forms/edit/' . $form->id) }}"><i class="fa fa-pencil-square-o"></i></a></td>
 							</tr>
 							@endforeach
