@@ -296,7 +296,7 @@ class EloquentWebFormsRepository implements WebFormsRepositoryInterface {
 
 		foreach ($form->dataHeadings($limit) as $field)
 		{
-			$headings[$field->identifier] = $field->label;
+			$headings[$field->identifier.'-'.$field->id] = $field->label;
 		}
 
 		return $headings;

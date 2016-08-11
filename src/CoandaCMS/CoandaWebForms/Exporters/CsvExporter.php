@@ -139,6 +139,7 @@ class CsvExporter {
     private function addHeadings()
     {
         $this->headings = $this->formsRepository->dataHeadings($this->form);
+
         $this->headings['created_at'] = 'Submitted';
 
         $this->csv->insertOne($this->headings);
@@ -188,7 +189,7 @@ class CsvExporter {
 
             foreach ($submission->fields as $field)
             {
-                $row[$field->identifier] = $field->display_export;
+                $row[$field->identifier.'-'.$field->field_id] = $field->display_export;
             }
 
             $row['created_at'] = $submission->created_at;
