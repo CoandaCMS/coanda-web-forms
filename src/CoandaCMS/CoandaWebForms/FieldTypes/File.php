@@ -23,6 +23,28 @@ class File extends FieldType {
         return 'file';
     }
 
+    private function generateRequiredIf($required_if, $form_id)
+    {
+        if (!strpos($required_if, ':')) {
+            return;
+        }
+
+        $parts = explode(':', $required_if);
+
+        $field = $parts[0];
+        $values = explode('|', $parts[1]);
+
+        $form_field = \CoandaCMS\CoandaWebForms\Repositories\Eloquent\Models\WebFormField::whereIdentifier($field)->whereWebformId($form_id)->first();
+
+        if (!$form_field) {
+            return;
+        }
+
+        $submitted_value = Input::get('field_'.$form_field->id);
+
+        return in_array($submitted_value, $values);
+    }
+
     /**
      * @param $field
      * @param $data
@@ -32,8 +54,15 @@ class File extends FieldType {
     public function handleSubmissionData($field, $data)
     {
         $file = Input::hasFile('field_' . $field->id) ? Input::file('field_' . $field->id) : false;
+        $required_if = false;
 
-        if ($file === false && $field->required)
+        $type_data = $field->typeData();
+
+        if (isset($type_data['required_if_logic'])) {
+            $required_if = $this->generateRequiredIf($type_data['required_if_logic'], $field->webform_id);
+        }
+
+        if ($file === false && ($field->required || $required_if))
         {
            throw new FieldTypeRequiredException('Please upload a file');
         }
